@@ -62,7 +62,7 @@ export default function Navbar() {
           <SheetTrigger>
             <IoMenu className="scale-150" />
           </SheetTrigger>
-          <SheetContent>
+          <SheetContent className="w-full">
             <SheetHeader>
               <SheetTitle className="text-center">Ahum Maitra</SheetTitle>
             </SheetHeader>

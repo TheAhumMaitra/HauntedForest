@@ -6,9 +6,7 @@ export default function HeroSection() {
           Hello World! I am Ahum
         </h1>
         <p className="lg:text-2xl sm:text-xl font-bold sm:w-xl text-transparent bg-clip-text bg-linear-to-r from-cyan-500 to-green-400 text-wrap">
-          Welcome to my beautiful website. I created this website using Next JS
-          16, ReactBits. It is open source on Github. Feel free to know about me
-          and contact me!
+          Welcome to my beautiful website. I am a programmer, who loves programming! I love Python, C, Rust, JS, TS, frontend and backend works!
         </p>
       </div>
     </section>

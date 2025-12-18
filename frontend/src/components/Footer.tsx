@@ -12,9 +12,12 @@ export default function Footer() {
         </div>
         <div className="flex flex-col mb-4 items-center">
           <h2 className="font-bold text-[1.1rem]">Resources</h2>
-          <div className="text-accent font-medium">
+          <div className="text-accent flex flex-col gap-2 mt-2 font-medium">
             <Link href={"https://github.com/TheAhumMaitra/HauntedForest"}>
               Github
+            </Link>
+             <Link href={"https://codeberg.org/AhumMaitra"}>
+              Codeberg
             </Link>
           </div>
         </div>

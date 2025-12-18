@@ -8,6 +8,7 @@ import {
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
+import { SiCodeberg } from "react-icons/si";
 import { ModeToggle } from "./theme-toggle";
 
 export default function Navbar() {
@@ -40,7 +41,20 @@ export default function Navbar() {
       </ul>
       <div className="ml-auto self-end flex justify-between items-center gap-4 mr-4">
         <ModeToggle />
-        <FaGithub className="scale-150 cursor-pointer" />
+        <div className="flex gap-5">
+          <Link
+            href={"https://github.com/TheAhumMaitra/"}
+            className="cursor-pointer"
+          >
+            <FaGithub className="scale-150" />
+          </Link>
+          <Link
+            href={"https://codeberg.org/AhumMaitra"}
+            className="cursor-pointer"
+          >
+            <SiCodeberg className="scale-150" />
+          </Link>
+        </div>
       </div>
       {/*Mobile Navigation*/}
       <div className="lg:hidden ml-6 flex justify-center items-center">

@@ -27,7 +27,7 @@ export default function Footer() {
         </div>
       </div>
       <div className="m-3">
-        <p className="lg:text-2xl font-bold sm:text-xl text-wrap">This websites source code is licensed under the terms of GPL-3.0 . This website's content is licensed under the terms of CC BY-NC-SA 4.0</p>
+        <p className="lg:text-[1rem] lg:text-center font-bold sm:text-xl text-wrap">This websites source code is licensed under the terms of GPL-3.0 . This website's content is licensed under the terms of CC BY-NC-SA 4.0</p>
       </div>
     </>
   );

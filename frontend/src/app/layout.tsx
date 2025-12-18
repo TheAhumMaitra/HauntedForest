@@ -1,9 +1,10 @@
-import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
-import "./globals.css";
-import { ThemeProvider } from "next-themes";
+import Footer from "@/components/Footer";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/NavBar";
+import type { Metadata } from "next";
+import { ThemeProvider } from "next-themes";
+import { Geist, Geist_Mono } from "next/font/google";
+import "./globals.css";
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -37,21 +38,21 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <div className="pointer-events-none absolute inset-0 -z-10 min-h-screen!">
+          <div className="pointer-events-none fixed inset-0 -z-10">
             <LightRays
               raysOrigin="top-center"
               raysColor="#00ffff"
-              raysSpeed={1.5}
+              raysSpeed={3.5}
               lightSpread={0.8}
-              rayLength={1.2}
+              rayLength={10}
               followMouse={false}
               mouseInfluence={0.1}
               noiseAmount={0.1}
               distortion={0.05}
-              className="custom-rays"
             />
           </div>
           {children}
+          <Footer />
         </ThemeProvider>
       </body>
     </html>

@@ -1,20 +1,22 @@
-import Link from "next/link";
-import { ModeToggle } from "./theme-toggle";
-import { IoMenu } from "react-icons/io5";
 import {
   Sheet,
   SheetContent,
-  SheetDescription,
   SheetHeader,
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
+import { IoMenu } from "react-icons/io5";
+import { ModeToggle } from "./theme-toggle";
 
 export default function Navbar() {
   return (
     <nav className="flex p-3 justify-stretch items-center h-full sticky top-0 border-4 border-border w-full backdrop-blur-xl rounded-2xl text-foreground">
-      <Link className="text-2xl hover:border-2 hover:p-1 hover:border-purple-500 hover:rounded-3xl transition-all font-bold" href={"/"}>
+      <Link
+        className="text-2xl hover:border-2 hover:p-1 hover:border-purple-500 hover:rounded-3xl transition-all font-bold"
+        href={"/"}
+      >
         Ahum Maitra
       </Link>
       {/*Destop Navigation*/}
@@ -37,8 +39,8 @@ export default function Navbar() {
         </li>
       </ul>
       <div className="ml-auto self-end flex justify-between items-center gap-4 mr-4">
-      <ModeToggle />
-      <FaGithub className="scale-150 cursor-pointer"/>
+        <ModeToggle />
+        <FaGithub className="scale-150 cursor-pointer" />
       </div>
       {/*Mobile Navigation*/}
       <div className="lg:hidden ml-6 flex justify-center items-center">

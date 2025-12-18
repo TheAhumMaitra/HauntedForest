@@ -27,7 +27,7 @@ export default function Footer() {
         </div>
       </div>
       <div>
-        <p>This websites source code is licensed under the terms of GNU</p>
+        <p>This websites source code is licensed under the terms of GPL-3.0 . This website's content is licensed under the terms of CC BY-NC-SA 4.0</p>
       </div>
     </>
   );

@@ -38,6 +38,14 @@ export default function Navbar() {
             About Me
           </Link>
         </li>
+         <li>
+          <Link
+            href={"/about"}
+            className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
+          >
+            Posts
+          </Link>
+        </li>
       </ul>
       <div className="ml-auto self-end flex justify-between items-center gap-4 mr-4">
         <ModeToggle />
@@ -81,6 +89,14 @@ export default function Navbar() {
                   className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
                 >
                   About Me
+                </Link>
+              </li>
+              <li className="border-4 p-2 border-border">
+                <Link
+                  href={"/posts"}
+                  className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
+                >
+                  Blog Posts
                 </Link>
               </li>
             </ul>

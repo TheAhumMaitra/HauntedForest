@@ -1,8 +1,12 @@
+import { withContentlayer } from "next-contentlayer";
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  reactStrictMode: true,
   reactCompiler: true,
+
+  // REQUIRED for Next.js 16 + Contentlayer
+  turbopack: {},
 };
 
-export default nextConfig;
+export default withContentlayer(nextConfig);

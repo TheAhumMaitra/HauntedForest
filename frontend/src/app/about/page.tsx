@@ -1,5 +1,4 @@
 import FuzzyText from "../../components/FuzzyText";
-import TrueFocus from "../../components/TrueFocus";
 export default function Page() {
   return (
     <div className="min-h-screen m-3">
@@ -10,20 +9,15 @@ export default function Page() {
         <div className="mt-7">
           <FuzzyText baseIntensity={0.2}>Hello World!</FuzzyText>
         </div>
-        <div className=" text-center scale-70 border-4">
-          <TrueFocus
-            sentence="Hello, World! I am Ahum. I am a programmer. I want to become an AI and
-        ML developer. I love programming. I am currently learning so many
-        stuffs. I use my primary language as Python. I love Python. I know
-        Python, Javascript, Go, Rust, Typescript, Kotlin. I know web developing
-        (frontend) and learning backend. I love Next JS. I am learning video
-        editing as a hobby. Thanks for visiting my website."
-            manualMode={false}
-            blurAmount={2}
-            borderColor="purple"
-            animationDuration={2}
-            pauseBetweenAnimations={2}
-          />
+        <div className="text-center mt-10 w-2xl sm:w-full text-wrap border-purple-900 rounded-2xl font-bold border-4">
+          <p>
+            "Hello, World! I am Ahum. I am a programmer. I want to become an AI
+            and ML developer. I love programming. I am currently learning so
+            many stuffs. I use my primary language as Python. I love Python. I
+            know Python, Javascript, Go, Rust, Typescript, Kotlin. I know web
+            developing (frontend) and learning backend. I love Next JS. I am
+            learning video editing as a hobby. Thanks for visiting my website."
+          </p>
         </div>
       </div>
     </div>

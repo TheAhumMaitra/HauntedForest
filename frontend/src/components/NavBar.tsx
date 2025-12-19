@@ -40,7 +40,7 @@ export default function Navbar() {
         </li>
          <li>
           <Link
-            href={"/about"}
+            href={"/posts"}
             className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
           >
             Posts

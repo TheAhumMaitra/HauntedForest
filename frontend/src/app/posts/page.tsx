@@ -10,7 +10,7 @@ function PostCard(post: Post) {
         <Image
           className="border-border border-4 rounded-2xl mb-3"
           alt="Post image"
-          src={post.image}
+          src={post.image as string}
           width={800}
           height={500}
         />

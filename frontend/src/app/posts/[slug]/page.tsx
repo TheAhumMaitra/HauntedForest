@@ -38,7 +38,7 @@ const PostLayout = async ({
     <div className="min-h-screen mw-full">
       <article className="mx-auto max-w-xl py-8">
         <div className="mb-8 text-center">
-          <Image className="border-border border-4 rounded-2xl mb-3" alt="Post image" src={post.image} width={800} height={500}/>
+          <Image className="border-border border-4 rounded-2xl mb-3" alt="Post image" src={post.image as string} width={800} height={500}/>
           <time dateTime={post.date} className="mb-1 text-xs text-gray-600">
             {format(parseISO(post.date), "LLLL d, yyyy")}
           </time>

@@ -1,30 +1,46 @@
+import Aurora from "@/components/Aurora";
 import Shuffle from "@/components/Shuffle";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { SiCodeberg } from "react-icons/si";
+import DecryptedText from "@/components/DecryptedText";
 
 export default function Page() {
   return (
     <>
+      <div className="absolute top-15 -z-10 w-full h-full">
+        <Aurora
+          colorStops={["#55eb34", "#40008a", "#ff0073"]}
+          blend={0.3}
+          amplitude={1.0}
+          speed={0.5}
+        />
+      </div>
+
       <div className="w-full min-h-screen p-3 flex flex-col justify-center items-center gap-10">
         <h1 className="text-center sm:text-5xl italic font-bold text-3xl text-purple-500">
           Hello, I am
         </h1>
         <div className="grid place-items-center rounded-2xl sm:scale-200">
-          <Shuffle
-            text="Ahum Maitra"
-            shuffleDirection="right"
-            duration={0.35}
-            animationMode="evenodd"
-            shuffleTimes={1}
-            ease="power3.out"
-            stagger={0.03}
-            threshold={0.1}
-            triggerOnce={true}
-            triggerOnHover={true}
-            respectReducedMotion={true}
-          />
+          <span className="flex gap-2">
+            <Shuffle
+              text="Ahum "
+              shuffleDirection="right"
+              duration={0.35}
+              animationMode="evenodd"
+              shuffleTimes={1}
+              ease="power3.out"
+              stagger={0.03}
+              threshold={0.1}
+              triggerOnce={true}
+              triggerOnHover={true}
+              respectReducedMotion={true}
+            />
+            <div className="scale-160 relative top-1">
+            <DecryptedText text="Maitra"   animateOn="view" />
+            </div>
+          </span>
         </div>
         <p className="font-semibold italic border-b-cyan-400 p-3 rounded-2xl border-4">
           Hello, World! I'm a programmer, who loves Python, JS, TS, Web
@@ -48,8 +64,8 @@ export default function Page() {
             </Badge>
           </span>
         </div>
-        <div className="flex flex-col justify-between items-center gap-8 mt-2">
           <h2 className="font-bold text-xl">Social Links: </h2>
+        <div className="flex justify-between items-center gap-8 mt-0">
           <span>
             <Link
               href={"https://github.com/TheAhumMaitra/"}

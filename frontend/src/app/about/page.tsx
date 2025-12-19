@@ -5,7 +5,7 @@ export default function Page() {
       {/* <h1 className="font-bold text-5xl lg:text-center text-transparent bg-clip-text bg-linear-to-r from-lime-400 to-cyan-400 mt-6 mb-8">
         About Me
       </h1> */}
-      <div className=" scale-30 sm:min-w-full flex flex-col justify-between items-center">
+      <div className=" sm:min-w-full border-4 border-purple-950 rounded-3xl p-3 flex flex-col justify-between items-center">
         <div className="mt-7">
           <FuzzyText baseIntensity={0.2}>About Me</FuzzyText>
         </div>

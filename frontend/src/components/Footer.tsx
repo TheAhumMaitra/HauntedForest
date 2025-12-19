@@ -8,7 +8,9 @@ export default function Footer() {
           <h2 className="font-bold p-2 mb-2 border-purple-700 border-2 rounded-3xl">
             Ahum Maitra
           </h2>
-          <p className="font-medium mt-3">Hello World! This my personal website!</p>
+          <p className="font-medium mt-3">
+            Hello World! This my personal website!
+          </p>
         </div>
         <div className="flex flex-col mb-4 items-center">
           <h2 className="font-bold text-[1.1rem]">Resources</h2>
@@ -16,9 +18,7 @@ export default function Footer() {
             <Link href={"https://github.com/TheAhumMaitra/HauntedForest"}>
               Github
             </Link>
-             <Link href={"https://codeberg.org/AhumMaitra"}>
-              Codeberg
-            </Link>
+            <Link href={"https://codeberg.org/AhumMaitra"}>Codeberg</Link>
           </div>
         </div>
         <div className="flex flex-col justify-between items-center font-medium">
@@ -26,11 +26,15 @@ export default function Footer() {
           <div className="text-accent flex flex-col gap-2">
             <Link href={"/"}>Home</Link>
             <Link href={"/about"}>About</Link>
+            <Link href={"/posts"}>Blog Posts</Link>
           </div>
         </div>
       </div>
       <div className="m-3">
-        <p className="text-sm text-center sm:text-[1rem] font-bold text-wrap">This websites source code is licensed under the terms of GPL-3.0 . This website's content is licensed under the terms of CC BY-NC-SA 4.0</p>
+        <p className="text-sm text-center sm:text-[1rem] font-bold text-wrap">
+          This websites source code is licensed under the terms of GPL-3.0 .
+          This website's content is licensed under the terms of CC BY-NC-SA 4.0
+        </p>
       </div>
     </>
   );

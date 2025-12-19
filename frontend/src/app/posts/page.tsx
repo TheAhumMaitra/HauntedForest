@@ -24,7 +24,9 @@ function PostCard(post: Post) {
         </h2>
         <h2 className="font-semibold p-2 rounded-2xl border-2 border-border w-38 text-yellow-400 mb-3">
           <span className="font-medium text-gray-500 mr-3 text-sm">By</span>
+          <Link href={"/authors/ahummaitra"}>
           {post.author}
+          </Link>
         </h2>
         <time dateTime={post.date} className="mb-2 block text-xs text-gray-600">
           {format(parseISO(post.date), "LLLL d, yyyy")}

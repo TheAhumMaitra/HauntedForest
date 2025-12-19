@@ -2,6 +2,7 @@
 import { allPosts } from "contentlayer/generated";
 import { format, parseISO } from "date-fns";
 import Image from "next/image";
+import Link from "next/link";
 import { notFound } from "next/navigation"; // Better than throwing a raw error
 
 export const generateStaticParams = async () =>
@@ -43,7 +44,11 @@ const PostLayout = async ({
             {format(parseISO(post.date), "LLLL d, yyyy")}
           </time>
           <h1 className="text-3xl font-bold">{post.title}</h1>
-          <h2 className="text-purple-500 font-semibold">{post.author}</h2>
+          <h2 className="text-purple-500 font-semibold">
+            <Link href={"/authors/ahummaitra"}>
+            {post.author}
+            </Link>
+            </h2>
         </div>
         <div
           className="[&>*]:mb-3 [&>*:last-child]:mb-0 font-medium"

@@ -1,10 +1,9 @@
 import Aurora from "@/components/Aurora";
-import Shuffle from "@/components/Shuffle";
+import SplitText from "@/components/SplitText";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { SiCodeberg } from "react-icons/si";
-import DecryptedText from "@/components/DecryptedText";
 
 export default function Page() {
   return (
@@ -23,24 +22,19 @@ export default function Page() {
           Hello, I am
         </h1>
         <div className="grid place-items-center rounded-2xl sm:scale-200">
-          <span className="flex gap-2">
-            <Shuffle
-              text="Ahum "
-              shuffleDirection="right"
-              duration={0.35}
-              animationMode="evenodd"
-              shuffleTimes={1}
-              ease="power3.out"
-              stagger={0.03}
-              threshold={0.1}
-              triggerOnce={true}
-              triggerOnHover={true}
-              respectReducedMotion={true}
-            />
-            <div className="scale-160 relative top-1">
-            <DecryptedText text="Maitra"   animateOn="view" />
-            </div>
-          </span>
+          <SplitText
+            text="Ahum Maitra"
+            className="text-2xl font-semibold text-center"
+            delay={100}
+            duration={0.6}
+            ease="power3.out"
+            splitType="chars"
+            from={{ opacity: 0, y: 40 }}
+            to={{ opacity: 1, y: 0 }}
+            threshold={0.1}
+            rootMargin="-100px"
+            textAlign="center"
+          />
         </div>
         <p className="font-semibold italic border-b-cyan-400 p-3 rounded-2xl border-4">
           Hello, World! I'm a programmer, who loves Python, JS, TS, Web
@@ -64,7 +58,7 @@ export default function Page() {
             </Badge>
           </span>
         </div>
-          <h2 className="font-bold text-xl">Social Links: </h2>
+        <h2 className="font-bold text-xl">Social Links: </h2>
         <div className="flex justify-between items-center gap-8 mt-0">
           <span>
             <Link

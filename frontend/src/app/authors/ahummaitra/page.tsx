@@ -1,9 +1,10 @@
 import Aurora from "@/components/Aurora";
-import SplitText from "@/components/SplitText";
+import SplitTextClient from "@/components/SplitTextClient";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { SiCodeberg } from "react-icons/si";
+
 
 export default function Page() {
   return (
@@ -22,7 +23,7 @@ export default function Page() {
           Hello, I am
         </h1>
         <div className="grid place-items-center rounded-2xl sm:scale-200">
-          <SplitText
+          <SplitTextClient
             text="Ahum Maitra"
             className="text-2xl font-semibold text-center"
             delay={100}

@@ -103,7 +103,7 @@ export default function Navbar() {
               <li className="border-4 p-2 border-primary rounded-full">
                 <Link
                   href={"/"}
-                  className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
+                  className="active:font-bold active:bg-chart-5 active:p-2 active:rounded-xl transition-all"
                 >
                   Home
                 </Link>
@@ -111,7 +111,7 @@ export default function Navbar() {
               <li className="border-4 p-2 border-primary rounded-full">
                 <Link
                   href={"/about"}
-                  className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
+                  className="active:font-bold active:bg-chart-5 active:p-2 active:rounded-xl transition-all"
                 >
                   About Me
                 </Link>
@@ -119,7 +119,7 @@ export default function Navbar() {
               <li className="border-4 p-2 border-primary rounded-full">
                 <Link
                   href={"/posts"}
-                  className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
+                  className="active:font-bold active:bg-chart-5 active:p-2 active:rounded-xl transition-all"
                 >
                   Blog Posts
                 </Link>
@@ -128,12 +128,12 @@ export default function Navbar() {
             <div className="flex flex-col gap-2 mt-5 justify-between items-center">
               <SignedOut>
                 <SignInButton>
-                  <button className="bg-accent hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                  <button className="bg-accent active:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
                     Sign In
                   </button>
                 </SignInButton>
                 <SignUpButton>
-                  <button className="bg-card hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                  <button className="bg-card active:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
                     Sign Up
                   </button>
                 </SignUpButton>

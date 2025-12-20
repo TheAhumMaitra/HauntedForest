@@ -98,8 +98,9 @@ export default function Navbar() {
             <SheetHeader>
               <SheetTitle className="text-center">Ahum Maitra</SheetTitle>
             </SheetHeader>
+            <hr />
             <ul className="flex justify-center items-center lg:hidden flex-col gap-4">
-              <li className="border-4 p-2 border-border">
+              <li className="border-4 p-2 border-primary rounded-full">
                 <Link
                   href={"/"}
                   className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
@@ -107,7 +108,7 @@ export default function Navbar() {
                   Home
                 </Link>
               </li>
-              <li className="border-4 p-2 border-border">
+              <li className="border-4 p-2 border-primary rounded-full">
                 <Link
                   href={"/about"}
                   className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
@@ -115,7 +116,7 @@ export default function Navbar() {
                   About Me
                 </Link>
               </li>
-              <li className="border-4 p-2 border-border">
+              <li className="border-4 p-2 border-primary rounded-full">
                 <Link
                   href={"/posts"}
                   className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
@@ -124,7 +125,7 @@ export default function Navbar() {
                 </Link>
               </li>
             </ul>
-            <div className="flex flex-col gap-2 justify-between items-center">
+            <div className="flex flex-col gap-2 mt-5 justify-between items-center">
               <SignedOut>
                 <SignInButton>
                   <button className="bg-accent hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
@@ -138,7 +139,9 @@ export default function Navbar() {
                 </SignUpButton>
               </SignedOut>
               <SignedIn>
+                <div className="scale-150 mt-3">
                 <UserButton />
+                </div>
               </SignedIn>
             </div>
           </SheetContent>

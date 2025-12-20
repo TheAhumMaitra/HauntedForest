@@ -5,6 +5,13 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
@@ -38,7 +45,7 @@ export default function Navbar() {
             About Me
           </Link>
         </li>
-         <li>
+        <li>
           <Link
             href={"/posts"}
             className="hover:font-bold hover:bg-purple-600 hover:p-2 hover:rounded-xl transition-all"
@@ -63,6 +70,23 @@ export default function Navbar() {
             <SiCodeberg className="scale-150" />
           </Link>
         </div>
+      </div>
+      <div className="hidden sm:flex gap-2 justify-center items-center">
+        <SignedOut>
+          <SignInButton>
+            <button className="bg-accent hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+              Sign In
+            </button>
+          </SignInButton>
+          <SignUpButton>
+            <button className="bg-card hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+              Sign Up
+            </button>
+          </SignUpButton>
+        </SignedOut>
+        <SignedIn>
+          <UserButton />
+        </SignedIn>
       </div>
       {/*Mobile Navigation*/}
       <div className="lg:hidden ml-6 flex justify-center items-center">
@@ -100,6 +124,23 @@ export default function Navbar() {
                 </Link>
               </li>
             </ul>
+            <div className="flex flex-col gap-2 justify-between items-center">
+              <SignedOut>
+                <SignInButton>
+                  <button className="bg-accent hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                    Sign In
+                  </button>
+                </SignInButton>
+                <SignUpButton>
+                  <button className="bg-card hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
+                    Sign Up
+                  </button>
+                </SignUpButton>
+              </SignedOut>
+              <SignedIn>
+                <UserButton />
+              </SignedIn>
+            </div>
           </SheetContent>
         </Sheet>
       </div>

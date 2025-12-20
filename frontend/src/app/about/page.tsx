@@ -5,12 +5,12 @@ export default function Page() {
       {/* <h1 className="font-bold text-5xl lg:text-center text-transparent bg-clip-text bg-linear-to-r from-lime-400 to-cyan-400 mt-6 mb-8">
         About Me
       </h1> */}
-      <div className=" sm:min-w-full border-4 border-purple-950 rounded-3xl p-3 flex flex-col justify-between items-center">
+      <div className=" sm:min-w-full border-b-4 pb-3 flex flex-col justify-between items-center">
         <div className="mt-7">
           <FuzzyText baseIntensity={0.2}>About Me</FuzzyText>
         </div>
       </div>
-      <div className="text-center mt-10 w-90 h-full sm:w-full text-wrap border-purple-900 rounded-2xl font-bold border-4">
+      <div className="text-center mt-10 w-85 h-full sm:w-full text-wrap border-background shadow-2xl shadow-primary bg-card p-3 rounded-2xl font-bold border-4">
         <p className="w-full">
           "Hello, World! I am Ahum. I am a programmer. I want to become an AI
           and ML developer. I love programming. I am currently learning so many

@@ -1,9 +1,5 @@
+import { withContentlayer } from "next-contentlayer";
 import type { NextConfig } from "next";
-import createMDX from "@next/mdx"
-
-const withMDX = createMDX({
-  extension: /\.mdx?$/
-})
 
 const nextConfig: NextConfig = {
   reactStrictMode: true,
@@ -13,4 +9,4 @@ const nextConfig: NextConfig = {
   turbopack: {},
 };
 
-export default withMDX(nextConfig);
+export default withContentlayer(nextConfig);

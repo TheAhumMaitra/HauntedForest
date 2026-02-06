@@ -32,9 +32,9 @@ export default function Footer() {
       </div>
       <div className="m-3">
         <p className="text-sm text-center sm:text-[1rem] font-bold text-wrap">
-          This websites source code is licensed under the terms of GPL-3.0 .
-          This website's content is licensed under the terms of CC BY-NC-SA 4.0
+          &copy;Copyright by Ahum Maitra. All rights reserved by Ahum Maitra.
         </p>
+        <p className="text-sm text-center mt-3 italic font-medium text-muted-foreground">This website's source code (excluding content) is licensed under the terms of GPL-3.0 .</p>
       </div>
     </>
   );

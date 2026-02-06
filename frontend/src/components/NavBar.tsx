@@ -5,13 +5,7 @@ import {
   SheetTitle,
   SheetTrigger,
 } from "@/components/ui/sheet";
-import {
-  SignInButton,
-  SignUpButton,
-  SignedIn,
-  SignedOut,
-  UserButton,
-} from "@clerk/nextjs";
+
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { IoMenu } from "react-icons/io5";
@@ -71,23 +65,7 @@ export default function Navbar() {
           </Link>
         </div>
       </div>
-      <div className="hidden sm:flex gap-2 justify-center items-center">
-        <SignedOut>
-          <SignInButton>
-            <button className="bg-accent hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-              Sign In
-            </button>
-          </SignInButton>
-          <SignUpButton>
-            <button className="bg-card hover:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-              Sign Up
-            </button>
-          </SignUpButton>
-        </SignedOut>
-        <SignedIn>
-          <UserButton />
-        </SignedIn>
-      </div>
+
       {/*Mobile Navigation*/}
       <div className="lg:hidden ml-6 flex justify-center items-center">
         <Sheet>
@@ -125,25 +103,6 @@ export default function Navbar() {
                 </Link>
               </li>
             </ul>
-            <div className="flex flex-col gap-2 mt-5 justify-between items-center">
-              <SignedOut>
-                <SignInButton>
-                  <button className="bg-accent active:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                    Sign In
-                  </button>
-                </SignInButton>
-                <SignUpButton>
-                  <button className="bg-card active:bg-primary text-foreground rounded-full font-medium text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 cursor-pointer">
-                    Sign Up
-                  </button>
-                </SignUpButton>
-              </SignedOut>
-              <SignedIn>
-                <div className="scale-150 mt-3">
-                <UserButton />
-                </div>
-              </SignedIn>
-            </div>
           </SheetContent>
         </Sheet>
       </div>

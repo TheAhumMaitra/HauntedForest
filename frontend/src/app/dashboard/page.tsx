@@ -2,6 +2,13 @@
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { OrganizationSwitcher, useAuth, useOrganization } from "@clerk/nextjs";
 import { useState } from "react";
+import {
+  SignInButton,
+  SignUpButton,
+  SignedIn,
+  SignedOut,
+  UserButton,
+} from "@clerk/nextjs";
 
 function AddPost() {
   return (
@@ -27,11 +34,11 @@ export default function Page() {
     return (
       <div className="min-h-screen w-full">
         <Alert variant="destructive" className="mt-6">
-          <AlertTitle>You must be SignedIn to access the page!</AlertTitle>
+          <AlertTitle>You must be Signed In to access the page!</AlertTitle>
           <AlertDescription>
-            Sign In to access this page and you must be an admin to access this
-            page
+            You must be signed in to access this page. This page is for admins only.
           </AlertDescription>
+          <SignInButton />
         </Alert>
       </div>
     );
@@ -80,7 +87,7 @@ export default function Page() {
       <p>
         <button
           onClick={() => setShowAddPost(true)}
-          className="bg-card p-3 rounded-full font-bold hover:bg-primary"
+          className="bg-card p-3 rounded-full font-bold hover:bg-destructive"
         >
           Create Post
         </button>

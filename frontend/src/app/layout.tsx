@@ -1,7 +1,7 @@
 import Footer from "@/components/Footer";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/NavBar";
-import Snowfall from "@/components/SnowFall";
+// import Snowfall from "@/components/SnowFall";
 import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
@@ -55,7 +55,6 @@ export default function RootLayout({
                 distortion={0.05}
               />
             </div>
-            <Snowfall />
             {children}
             <Footer />
           </ThemeProvider>

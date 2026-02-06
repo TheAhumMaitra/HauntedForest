@@ -1,4 +1,5 @@
 import FuzzyText from "../../components/FuzzyText";
+
 export default function Page() {
   return (
     <div className="min-h-screen m-3">

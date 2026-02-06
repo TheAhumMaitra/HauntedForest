@@ -45,9 +45,9 @@ export default function RootLayout({
             <div className="pointer-events-none fixed inset-0 -z-10">
               <LightRays
                 raysOrigin="top-center"
-                raysColor="#00ffff"
-                raysSpeed={3.5}
-                lightSpread={0.8}
+                raysColor="#BD93F9"
+                raysSpeed={0.5}
+                lightSpread={0.2}
                 rayLength={10}
                 followMouse={false}
                 mouseInfluence={0.1}

@@ -6,7 +6,7 @@ export default function HeroSection() {
           Hello World! I am Ahum
         </h1>
         <p className="text-xl sm:text-2xl font-bold sm:w-4xl text-transparent bg-clip-text bg-linear-to-r from-cyan-500 to-green-400 text-wrap">
-          Welcome to my beautiful website. I am a programmer, who loves programming! I love Python, C, Rust, JS, TS, frontend and backend works!
+          Hello, World! I'm Ahum. Welcome to my beautiful website. Explore this website and know about me!
         </p>
       </div>
     </section>

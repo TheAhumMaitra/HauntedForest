@@ -3,6 +3,40 @@
 import { useRef, useEffect, useState } from "react";
 import { Renderer, Program, Triangle, Mesh } from "ogl";
 
+const colorToRgb = (color: string): [number, number, number] => {
+  if (typeof document === "undefined") {
+    return [1, 1, 1];
+  }
+
+  // Resolve CSS variables
+  if (color.startsWith("var(")) {
+    const varName = color.match(/var\((.*?)\)/)?.[1]?.trim();
+    if (varName) {
+      color = getComputedStyle(document.documentElement)
+        .getPropertyValue(varName)
+        .trim();
+    }
+  }
+
+  // Use canvas to convert any CSS color format to RGB
+  const canvas = document.createElement("canvas");
+  canvas.width = 1;
+  canvas.height = 1;
+  const ctx = canvas.getContext("2d");
+
+  if (!ctx) return [1, 1, 1];
+
+  ctx.fillStyle = color;
+  ctx.fillRect(0, 0, 1, 1);
+  const imageData = ctx.getImageData(0, 0, 1, 1).data;
+
+  return [
+    imageData[0] / 255,
+    imageData[1] / 255,
+    imageData[2] / 255,
+  ];
+};
+
 export type RaysOrigin =
   | "top-center"
   | "top-left"
@@ -275,7 +309,7 @@ void main() {
         rayPos: { value: [0, 0] },
         rayDir: { value: [0, 1] },
 
-        raysColor: { value: hexToRgb(raysColor) },
+        raysColor: { value: colorToRgb(raysColor) },
         raysSpeed: { value: raysSpeed },
         lightSpread: { value: lightSpread },
         rayLength: { value: rayLength },
@@ -415,7 +449,9 @@ void main() {
     const u = uniformsRef.current;
     const renderer = rendererRef.current;
 
-    u.raysColor.value = hexToRgb(raysColor);
+    const colorValue = colorToRgb(raysColor);
+    console.log("Setting raysColor uniform:", { raysColor, colorValue });
+    u.raysColor.value = colorValue;
     u.raysSpeed.value = raysSpeed;
     u.lightSpread.value = lightSpread;
     u.rayLength.value = rayLength;

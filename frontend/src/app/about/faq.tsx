@@ -45,7 +45,7 @@ export default function FAQ() {
           <AccordionTrigger>
             Ahum, What's your favorite programming language?
           </AccordionTrigger>
-          <AccordionContent>Python</AccordionContent>
+          <AccordionContent>I do prefer Rust usually</AccordionContent>
         </AccordionItem>
         <AccordionItem value="fav-sakamoto-days-character">
           <AccordionTrigger>
@@ -70,17 +70,30 @@ export default function FAQ() {
             series
           </AccordionContent>
         </AccordionItem>
+          <AccordionItem value="heart">
+          <AccordionTrigger>
+            Ahum, Who do you love the most?
+          </AccordionTrigger>
+          <AccordionContent>
+            Jesus Christ (My Lord, God, Saviour)
+          </AccordionContent>
+        </AccordionItem>
+        <AccordionItem value="fav-Bible-verse">
+          <AccordionTrigger>
+            Ahum, Which Bible verses are your favorite?
+          </AccordionTrigger>
+          <AccordionContent>
+            Joshua 1:9, John 3:16, John 16:4, John 10:30, Revelation 1:8, Philippians 4:13 
+          </AccordionContent>
+        </AccordionItem>
         <AccordionItem value="fav-song">
           <AccordionTrigger>
             Ahum, What's your favorite song or song genre?
           </AccordionTrigger>
           <AccordionContent>
             It's a pretty good question. I like anime songs or songs that gives
-            me peace and relaxing vibes. I listen Dream Lantern and Your Name.
-            OST a lot. Sometimes, I like little bit sad vibes or lofi music or
-            instrumental of my favorite songs. I also like OST from Sakamoto
-            Days anime OST. I love Songs by Aurora, ED Sheeran, RADWIMPS, Fuji
-            Kaze, etc.
+            me peace and relaxing vibes. I listen  to Dream Lantern and Your Name, Queen Of Tears OST, Sakamoto Days a lot. Sometimes, I like little bit sad vibes or lofi music or
+            instrumental of my favorite songs. Sometimes, I like classical. I love Songs by Aurora, ED Sheeran, RADWIMPS, Fuji Kaze, etc.
           </AccordionContent>
         </AccordionItem>
       </Accordion>

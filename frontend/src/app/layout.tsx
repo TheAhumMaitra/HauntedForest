@@ -31,7 +31,10 @@ export default function RootLayout({
   return (
     <ClerkProvider>
       <html lang="en" suppressHydrationWarning>
-        <meta name="google-site-verification" content="EWlKxxDPAR_i9xq6LDfUAOl78DTclgQgl8Y_CJaX494" />
+        <meta
+          name="google-site-verification"
+          content="EWlKxxDPAR_i9xq6LDfUAOl78DTclgQgl8Y_CJaX494"
+        />
         <body
           className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
         >
@@ -45,7 +48,7 @@ export default function RootLayout({
             <div className="pointer-events-none fixed inset-0 -z-10">
               <LightRays
                 raysOrigin="top-center"
-                raysColor="#BD93F9"
+                raysColor="var(--primary)"
                 raysSpeed={0.5}
                 lightSpread={0.2}
                 rayLength={10}

@@ -38,13 +38,13 @@ const PostLayout = async ({
   return (
     <div className="min-h-screen mw-full">
       <article className="mx-auto max-w-xl py-8">
-        <div className="mb-8 text-center">
+        <div className="mb-8 text-center border-b-4 pb-5">
           <Image className="border-border border-4 rounded-2xl mb-3" alt="Post image" src={post.image as string} width={800} height={500}/>
           <time dateTime={post.date} className="mb-1 text-xs text-gray-600">
             {format(parseISO(post.date), "LLLL d, yyyy")}
           </time>
           <h1 className="text-3xl font-bold">{post.title}</h1>
-          <h2 className="text-purple-500 font-semibold">
+          <h2 className="text-destructive font-semibold">
             <Link href={"/authors/ahummaitra"}>
             {post.author}
             </Link>

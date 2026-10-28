@@ -1,6 +1,9 @@
 ---
 image : /Itomori.jpg
 title: A few words on Itomori
+categories:
+  - review
+  - experience
 date: 2025-12-20
 author: Ahum Maitra
 excerpt: Itomori is a blazingly fast quick note taking app.....
@@ -9,7 +12,6 @@ excerpt: Itomori is a blazingly fast quick note taking app.....
 **Hello, everyone! I hope you all are doing great!**
 
 So, I created an TUI app called **Itomori**. Which is helps you to write quick and short notes! I t stores notes in `json` format, which is good! It shows you notes on table formatted way, which is pretty good.
-
 ---
 
 The app is useful and good but every app has some _pros_ and _cons_ . Today, I'm going to give my app a honest review!

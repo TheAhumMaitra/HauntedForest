@@ -1,6 +1,9 @@
 ---
 image : /Aurora.png
 title: What's Aurora?
+categories:
+  - data
+  - information
 date: 2026-05-30
 author: Ahum Maitra
 excerpt: Aurora is Rust powered Hyprland preconfigured rice. Which aims to be..

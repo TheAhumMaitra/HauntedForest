@@ -2,11 +2,15 @@ import Footer from "@/components/Footer";
 import LightRays from "@/components/LightRays";
 import Navbar from "@/components/NavBar";
 // import Snowfall from "@/components/SnowFall";
-import { ClerkProvider } from "@clerk/nextjs";
 import type { Metadata } from "next";
 import { ThemeProvider } from "next-themes";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, JetBrains_Mono, Lora } from "next/font/google";
 import "./globals.css";
+import { cn } from "@/lib/utils";
+
+const loraHeading = Lora({subsets:['latin'],variable:'--font-heading'});
+
+const jetbrainsMono = JetBrains_Mono({subsets:['latin'],variable:'--font-mono'});
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,40 +33,38 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <ClerkProvider>
-      <html lang="en" suppressHydrationWarning>
-        <meta
-          name="google-site-verification"
-          content="EWlKxxDPAR_i9xq6LDfUAOl78DTclgQgl8Y_CJaX494"
-        />
-        <body
-          className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+    <html lang="en" suppressHydrationWarning className={cn("font-mono", jetbrainsMono.variable, loraHeading.variable)}>
+      <meta
+        name="google-site-verification"
+        content="EWlKxxDPAR_i9xq6LDfUAOl78DTclgQgl8Y_CJaX494"
+      />
+      <body
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+      >
+        <ThemeProvider
+          attribute="class"
+          defaultTheme="system"
+          enableSystem
+          disableTransitionOnChange
         >
-          <ThemeProvider
-            attribute="class"
-            defaultTheme="system"
-            enableSystem
-            disableTransitionOnChange
-          >
-            <Navbar />
-            <div className="pointer-events-none fixed inset-0 -z-10">
-              <LightRays
-                raysOrigin="top-center"
-                raysColor="var(--primary)"
-                raysSpeed={0.5}
-                lightSpread={0.2}
-                rayLength={10}
-                followMouse={false}
-                mouseInfluence={0.1}
-                noiseAmount={0.1}
-                distortion={0.05}
-              />
-            </div>
-            {children}
-            <Footer />
-          </ThemeProvider>
-        </body>
-      </html>
-    </ClerkProvider>
+          <Navbar />
+          <div className="pointer-events-none fixed inset-0 -z-10">
+            <LightRays
+              raysOrigin="top-center"
+              raysColor="var(--primary)"
+              raysSpeed={0.5}
+              lightSpread={0.2}
+              rayLength={10}
+              followMouse={false}
+              mouseInfluence={0.1}
+              noiseAmount={0.1}
+              distortion={0.05}
+            />
+          </div>
+          {children}
+          <Footer />
+        </ThemeProvider>
+      </body>
+    </html>
   );
 }

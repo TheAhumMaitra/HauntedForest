@@ -74,7 +74,7 @@ export default function FAQ() {
           <AccordionTrigger>
             Ahum, Who do you love the most?
           </AccordionTrigger>
-          <AccordionContent>
+          <AccordionContent> 
             Jesus Christ (My Lord, God, Saviour)
           </AccordionContent>
         </AccordionItem>

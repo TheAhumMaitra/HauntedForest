@@ -9,12 +9,12 @@ export default function Page() {
           <FuzzyText baseIntensity={0.2}>About Me</FuzzyText>
         </div>
       </div>
-      <div className="text-center mt-10 w-85 h-full sm:w-full text-wrap border-background shadow-2xl shadow-primary bg-card p-3 rounded-2xl font-bold border-4">
+      <div className="text-center text-foreground mt-10 w-85 h-full sm:w-full text-wrap border-background shadow-2xl shadow-primary bg-card p-3 rounded-2xl font-bold border-4">
         <p className="w-full">
-          Hello, World! This is Ahum :) I want to be an AI Engineer. I'm currently learning Rust, CS concepts. I'm working on some projects!
+          Hello, World! This is Ahum :) I want to be an AI Engineer. I'm currently learning Rust, CS concepts and much more!. I'm working on some projects! 
         </p>
       </div>
-      <div className="w-full h-full flex flex-col justify-center items-center sm:m-8">
+      <div className="w-full h-full flex flex-col justify-start items-center sm:m-8">
       <FAQ />
       </div>
     </div>

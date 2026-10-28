@@ -1,84 +1,94 @@
 import Aurora from "@/components/Aurora";
-import SplitTextClient from "@/components/SplitTextClient";
 import { Badge } from "@/components/ui/badge";
 import Link from "next/link";
 import { FaGithub } from "react-icons/fa";
 import { SiCodeberg } from "react-icons/si";
 
+const interests = [
+  "Computer Science",
+  "Python",
+  "Philosophy",
+  "History",
+  "Geography",
+  "Mathematics",
+  "Science",
+  "Theology",
+];
+
+const roles = ["Admin", "Writer", "Owner", "Philosopher", "Apologist"];
 
 export default function Page() {
   return (
-    <>
-      <div className="absolute top-15 -z-10 w-full h-full">
-        <Aurora
-          colorStops={["#55eb34", "#40008a", "#ff0073"]}
-          blend={0.3}
-          amplitude={1.0}
-          speed={0.5}
-        />
+    <main className="relative isolate min-h-screen overflow-hidden px-4 py-10 sm:px-6 lg:py-16">
+      <div className="pointer-events-none absolute inset-0 -z-20 bg-[radial-gradient(circle_at_top,rgba(168,85,247,0.08),transparent_40%)]" />
+      <div className="pointer-events-none absolute inset-x-0 top-0 -z-10 h-64 opacity-60 blur-3xl">
+        <Aurora colorStops={["#8b5cf6", "#22d3ee"]} amplitude={1} blend={0.6} />
       </div>
 
-      <div className="w-full min-h-screen p-3 flex flex-col justify-center items-center gap-10">
-        <h1 className="text-center sm:text-5xl italic font-bold text-3xl text-purple-500">
-          Hello, I am
-        </h1>
-        <div className="grid place-items-center rounded-2xl sm:scale-200">
-          <SplitTextClient
-            text="Ahum Maitra"
-            className="text-2xl font-semibold text-center"
-            delay={100}
-            duration={0.6}
-            ease="power3.out"
-            splitType="chars"
-            from={{ opacity: 0, y: 40 }}
-            to={{ opacity: 1, y: 0 }}
-            threshold={0.1}
-            rootMargin="-100px"
-            textAlign="center"
-          />
-        </div>
-        <p className="font-semibold italic border-b-cyan-400 p-3 rounded-2xl border-4">
-          Hello, World! I'm a programmer, who loves Python, JS, TS, Web
-          development Frontend, Backend, Go, Rust!
-        </p>
-        <div className="flex flex-col justify-between items-center gap-4 mt-2">
-          <h2 className="font-bold text-xl">Badges: </h2>
-          <span>
-            <Badge variant="outline" className="scale-120">
-              Admin
-            </Badge>
-          </span>
-          <span>
-            <Badge variant="secondary" className="scale-120">
-              Writer
-            </Badge>
-          </span>
-          <span>
-            <Badge variant="destructive" className="scale-120">
-              Owner
-            </Badge>
-          </span>
-        </div>
-        <h2 className="font-bold text-xl">Social Links: </h2>
-        <div className="flex justify-between items-center gap-8 mt-0">
-          <span>
-            <Link
-              href={"https://github.com/TheAhumMaitra/"}
-              className="cursor-pointer"
-            >
-              <FaGithub className="scale-150" />
-            </Link>
-          </span>
-          <span>
-            <Link
-              href={"https://codeberg.org/AhumMaitra"}
-              className="cursor-pointer"
-            >
-              <SiCodeberg className="scale-150" />
-            </Link>
-          </span>
+      <div className="relative mx-auto max-w-3xl">
+        <div className="flex flex-col gap-6 sm:flex-row sm:items-start sm:gap-8">
+          <div className="flex h-20 w-20 shrink-0 items-center justify-center rounded-full bg-gradient-to-br from-violet-500/20 via-sky-400/15 to-transparent text-lg font-bold tracking-tight">
+            AM
+          </div>
+
+          <div className="flex-1 space-y-6">
+            <div className="space-y-3">
+              <div className="flex flex-wrap items-center gap-2">
+                <h1 className="text-2xl font-bold tracking-tight sm:text-3xl">
+                  Ahum Maitra
+                </h1>
+                {roles.map((label) => (
+                  <Badge key={label} variant="outline" className="rounded-full">
+                    {label}
+                  </Badge>
+                ))}
+              </div>
+
+              <p className="text-base leading-relaxed text-muted-foreground">
+                Hello, World! I&apos;m a programmer who loves computer science
+                and Python. I also enjoy exploring philosophy, history,
+                geography, mathematics, science, and theology.
+              </p>
+            </div>
+
+            <div className="space-y-3">
+              <p className="text-sm font-medium">Interests</p>
+              <div className="flex flex-wrap gap-2">
+                {interests.map((item) => (
+                  <Badge
+                    key={item}
+                    variant="secondary"
+                    className="rounded-full"
+                  >
+                    {item}
+                  </Badge>
+                ))}
+              </div>
+            </div>
+
+            <div className="flex flex-wrap gap-2">
+              <Link
+                href="https://github.com/TheAhumMaitra/"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+              >
+                <FaGithub className="text-base" />
+                GitHub
+              </Link>
+              <Link
+                href="https://codeberg.org/AhumMaitra"
+                target="_blank"
+                rel="noreferrer"
+                className="inline-flex items-center gap-2 rounded-full border px-3 py-1.5 text-sm transition-colors hover:bg-accent"
+              >
+                <SiCodeberg className="text-base" />
+                Codeberg
+              </Link>
+            </div>
+          </div>
         </div>
       </div>
-    </>
+    </main>
   );
 }

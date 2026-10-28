@@ -8,8 +8,8 @@ export default function Footer() {
           <h2 className="font-bold p-2 mb-2 border-purple-700 border-2 rounded-3xl">
             Ahum Maitra
           </h2>
-          <p className="font-medium mt-3">
-            Hello World! This my personal website!
+          <p className="font-medium text-sm mt-3">
+            This website contains works, documents, articles, etc and stories. This website itself is not a portfolio and this website can contain weird features, it also may contain sound effects sometimes (which is not harmful for ears [normal users]). It can show some videos and some new things I am exploring
           </p>
         </div>
         <div className="flex flex-col mb-4 items-center">
@@ -21,7 +21,7 @@ export default function Footer() {
             <Link href={"https://codeberg.org/AhumMaitra"}>Codeberg</Link>
           </div>
         </div>
-        <div className="flex flex-col justify-between items-center font-medium">
+        <div className="flex flex-col items-center font-medium">
           <h2 className="font-bold mb-3 text-[1.1rem]">Pages</h2>
           <div className="text-accent flex flex-col gap-2">
             <Link href={"/"}>Home</Link>

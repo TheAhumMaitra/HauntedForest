@@ -1,13 +1,10 @@
 export default function HeroSection() {
   return (
-    <section className="h-full w-full m-auto p-3">
+    <section className="h-40 w-full mt-20 p-3">
       <div className="flex flex-col justify-center items-center gap-3.5">
-        <h1 className="font-bold underline decoration-purple-700 text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-pink-400 text-4xl text-center">
+        <h1 className="font-bold decoration-purple-700 text-transparent bg-clip-text bg-linear-to-r from-purple-500 to-pink-400 text-4xl text-center underline">
           Hello World! I am Ahum
         </h1>
-        <p className="text-xl sm:text-2xl font-bold sm:w-4xl text-transparent bg-clip-text bg-linear-to-r from-cyan-500 to-green-400 text-wrap">
-          Hello, World! I'm Ahum. Welcome to my beautiful website. Explore this website and know about me!
-        </p>
       </div>
     </section>
   );

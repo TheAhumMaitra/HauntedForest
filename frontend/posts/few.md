@@ -1,6 +1,10 @@
 ---
-image : /post1.jpg
+image: /post1.jpg
 title: My First Blog Post, How did I created it?
+categories:
+  - story about me
+  - experience
+  - philosophy
 date: 2025-12-19
 author: Ahum Maitra
 excerpt: Hello World! This is my first blog post! In this post, you are going to learn about this website! It is really easy to create this.................

@@ -17,49 +17,60 @@ const navItems = {
 
 export default function Navbar() {
   return (
-    <nav className="flex items-center justify-between p-4 sticky top-0 border-b bg-background/80 backdrop-blur-sm">
-      <Link href="/" className="text-xl font-bold">
-        Ahum Maitra
-      </Link>
+    <nav className="sticky top-0 z-50 border-b border-border bg-background/80 backdrop-blur-md">
+      <div className="mx-auto flex max-w-6xl items-center justify-between gap-4 px-4 py-3">
+        <Link href="/" className="text-xl font-bold">
+          Ahum Maitra
+        </Link>
 
-      {/* Desktop Navigation */}
-      <ul className="hidden md:flex gap-6 items-center">
-        {Object.entries(navItems).map(([path, name]) => (
-          <li key={path}>
-            <Link href={path} className="hover:bg-accent p-2 transition-colors">
-              {name}
-            </Link>
-          </li>
-        ))}
-      </ul>
+        <div className="hidden flex-1 items-center justify-center md:flex">
+          <ul className="flex items-center justify-center gap-6">
+            {Object.entries(navItems).map(([path, name]) => (
+              <li key={path}>
+                <Link
+                  href={path}
+                  className="rounded-md font-medium px-2 py-2 transition-colors hover:bg-accent"
+                >
+                  {name}
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
 
-      <div className="flex items-center gap-4 ml-auto">
-        <ModeToggle />
+        <div className="flex items-center gap-3">
+          <ModeToggle />
 
-        {/* Mobile Navigation */}
-        <div className="md:hidden">
-          <Sheet>
-            <SheetTrigger>
-              <IoMenu className="scale-150" />
-            </SheetTrigger>
-            <SheetContent className="w-full">
-              <SheetHeader>
-                <SheetTitle>Ahum Maitra</SheetTitle>
-              </SheetHeader>
-              <ul className="flex flex-col gap-4 mt-6">
-                {Object.entries(navItems).map(([path, name]) => (
-                  <li key={path}>
-                    <Link
-                      href={path}
-                      className="block p-2 hover:bg-accent transition-colors"
-                    >
-                      {name}
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-            </SheetContent>
-          </Sheet>
+          <div className="md:hidden">
+            <Sheet>
+              <SheetTrigger asChild>
+                <button
+                  type="button"
+                  aria-label="Open menu"
+                  className="flex items-center justify-center rounded-md p-2 hover:bg-accent"
+                >
+                  <IoMenu className="text-xl" />
+                </button>
+              </SheetTrigger>
+              <SheetContent className="w-full sm:max-w-sm">
+                <SheetHeader>
+                  <SheetTitle>Ahum Maitra</SheetTitle>
+                </SheetHeader>
+                <ul className="mt-6 flex flex-col items-center gap-4">
+                  {Object.entries(navItems).map(([path, name]) => (
+                    <li key={path}>
+                      <Link
+                        href={path}
+                        className="block rounded-md px-3 py-2 transition-colors hover:bg-accent"
+                      >
+                        {name}
+                      </Link>
+                    </li>
+                  ))}
+                </ul>
+              </SheetContent>
+            </Sheet>
+          </div>
         </div>
       </div>
     </nav>

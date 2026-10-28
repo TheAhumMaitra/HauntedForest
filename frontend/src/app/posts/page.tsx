@@ -21,7 +21,9 @@ const categories = [
   "maths",
   "experience",
   "review",
-  "information"
+  "information",
+  "AI",
+  "technology"
 ] as const;
 
 function PostCard(post: Post) {

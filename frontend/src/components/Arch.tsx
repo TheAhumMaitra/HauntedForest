@@ -26,6 +26,7 @@ export default function Arch() {
     fontWeight={800}
     fontFamily="inherit"
     glow
+    style = {{}}
   />
            </div>
         </>

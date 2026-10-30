@@ -8,7 +8,7 @@ import {
 export default function FAQ() {
   return (
     <>
-      <h2 className="font-bold text-2xl mb-4 underline">FAQ'S about me!</h2>
+      <h2 className="font-extrabold text-yellow-400 text-2xl mb-4 underline">FAQ'S about me!</h2>
       <Accordion type="single" collapsible className="max-w-lg">
         <AccordionItem value="anime">
           <AccordionTrigger>Ahum, do you watch animes?</AccordionTrigger>

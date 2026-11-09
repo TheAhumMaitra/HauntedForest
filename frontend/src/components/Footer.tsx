@@ -30,6 +30,14 @@ export default function Footer() {
           </div>
         </div>
       </div>
+       <div className="flex flex-col m-3 font-bold justify-center items-center text-center">
+        <h2 className="text-2xl underline italic">My Most fav songs comes from</h2>
+        <div className="flex gap-3 m-2">
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/PgZ0aPXOd4Y?si=15hhlWJnZyL7CG7R" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+         <iframe width="560" height="315" src="https://www.youtube.com/embed/H9yfuYDoGf4?si=Xs-A1acpERkWT9Gc" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+        </div>
+       </div>
+
       <div className="m-3">
         <p className="text-sm text-center sm:text-[1rem] font-bold text-wrap">
           &copy;Copyright by Ahum Maitra. All rights reserved by Ahum Maitra.

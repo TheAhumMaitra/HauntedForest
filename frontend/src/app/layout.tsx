@@ -4,7 +4,7 @@ import MonsterEncounter from "@/components/MonsterEncounter";
 import HorrorDisclaimer from "@/components/HorrorDisclaimer";
 import Navbar from "@/components/NavBar";
 // import Snowfall from "@/components/SnowFall";
-import type { Metadata } from "next";
+import type { Metadata, Viewport } from "next";
 import { ThemeProvider } from "next-themes";
 import { Geist, Geist_Mono, JetBrains_Mono, Lora } from "next/font/google";
 import "./globals.css";
@@ -24,6 +24,12 @@ const geistMono = Geist_Mono({
   subsets: ["latin"],
 });
 
+export const viewport: Viewport = {
+  width: "device-width",
+  initialScale: 1,
+  maximumScale: 5,
+};
+
 export const metadata: Metadata = {
   title: "Ahum Maitra | Website - Haunted Forest | Home page",
   description: "Ahum Maitra's official website.",
@@ -35,13 +41,13 @@ export default function RootLayout({
   children: React.ReactNode;
 }>) {
   return (
-    <html lang="en" suppressHydrationWarning className={cn("font-mono", jetbrainsMono.variable, loraHeading.variable)}>
+    <html lang="en" suppressHydrationWarning className={cn("font-mono overflow-x-hidden max-w-full", jetbrainsMono.variable, loraHeading.variable)}>
       <meta
         name="google-site-verification"
         content="EWlKxxDPAR_i9xq6LDfUAOl78DTclgQgl8Y_CJaX494"
       />
       <body
-        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased`}
+        className={`${geistSans.variable} ${geistMono.variable} min-h-screen antialiased overflow-x-hidden w-full max-w-full`}
       >
         <ThemeProvider
           attribute="class"

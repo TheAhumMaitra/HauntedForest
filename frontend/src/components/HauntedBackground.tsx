@@ -162,8 +162,14 @@ export default function HauntedBackground() {
       typeof window !== "undefined" &&
       window.matchMedia("(prefers-reduced-motion: reduce)").matches;
 
-    let width = (canvas.width = window.innerWidth);
-    let height = (canvas.height = window.innerHeight);
+    const getViewportDims = () => ({
+      w: Math.min(window.innerWidth, document.documentElement.clientWidth || window.innerWidth),
+      h: window.innerHeight,
+    });
+
+    const initialDims = getViewportDims();
+    let width = (canvas.width = initialDims.w);
+    let height = (canvas.height = initialDims.h);
 
     // Track serious mode
     let isSeriousMode = localStorage.getItem(SERIOUS_MODE_KEY) === "true";
@@ -223,48 +229,40 @@ export default function HauntedBackground() {
     const mouse = { x: -2000, y: -2000, targetX: -2000, targetY: -2000 };
     let touchResetTimeout: ReturnType<typeof setTimeout> | null = null;
 
-    // 1. Grid & Floating Red & Ash Dots (optimized count for mobile vs desktop)
+    // 1. Floating Red & Ash Dots (Strictly bounded inside width & height)
     const dots: RedDot[] = [];
-    // Mobile gets wider spacing -> ~40-60 dots. Desktop gets ~100-140 dots.
-    const spacing = isMobile
-      ? Math.max(64, Math.min(84, Math.floor(Math.sqrt((width * height) / 8000))))
-      : Math.max(48, Math.min(64, Math.floor(Math.sqrt((width * height) / 3600))));
+    const dotCount = isMobile ? 42 : 110;
 
-    const cols = Math.ceil(width / spacing) + 2;
-    const rows = Math.ceil(height / spacing) + 2;
+    for (let i = 0; i < dotCount; i++) {
+      const baseX = Math.random() * width;
+      const baseY = Math.random() * height;
 
-    for (let r = 0; r < rows; r++) {
-      for (let c = 0; c < cols; c++) {
-        const baseX = c * spacing + (Math.random() - 0.5) * 20;
-        const baseY = r * spacing + (Math.random() - 0.5) * 20;
+      const roll = Math.random();
+      let colorType: DotColorType = "crimson";
+      if (roll < 0.45) colorType = "blood";
+      else if (roll < 0.75) colorType = "crimson";
+      else if (roll < 0.90) colorType = "scarlet";
+      else colorType = "ruby";
 
-        const roll = Math.random();
-        let colorType: DotColorType = "crimson";
-        if (roll < 0.45) colorType = "blood";
-        else if (roll < 0.75) colorType = "crimson";
-        else if (roll < 0.90) colorType = "scarlet";
-        else colorType = "ruby";
+      const baseRadius =
+        colorType === "blood" || colorType === "scarlet"
+          ? (isMobile ? 1.3 : 1.6) + Math.random() * 1.4
+          : (isMobile ? 0.9 : 1.2) + Math.random() * 1.1;
 
-        const baseRadius =
-          colorType === "blood" || colorType === "scarlet"
-            ? (isMobile ? 1.4 : 1.6) + Math.random() * 1.5
-            : (isMobile ? 1.0 : 1.2) + Math.random() * 1.2;
-
-        dots.push({
-          x: baseX,
-          y: baseY,
-          baseX,
-          baseY,
-          vx: (Math.random() - 0.5) * 0.25,
-          vy: -0.12 - Math.random() * 0.3,
-          radius: baseRadius,
-          alpha: 0.15 + Math.random() * 0.45,
-          baseAlpha: 0.2 + Math.random() * 0.5,
-          pulsePhase: Math.random() * Math.PI * 2,
-          pulseSpeed: 0.015 + Math.random() * 0.03,
-          colorType,
-        });
-      }
+      dots.push({
+        x: baseX,
+        y: baseY,
+        baseX,
+        baseY,
+        vx: (Math.random() - 0.5) * 0.25,
+        vy: -0.12 - Math.random() * 0.3,
+        radius: baseRadius,
+        alpha: 0.15 + Math.random() * 0.45,
+        baseAlpha: 0.2 + Math.random() * 0.5,
+        pulsePhase: Math.random() * Math.PI * 2,
+        pulseSpeed: 0.015 + Math.random() * 0.03,
+        colorType,
+      });
     }
 
     // 2. Floating eye.png Entities (subtle, eerie, restrained count on mobile)
@@ -339,27 +337,34 @@ export default function HauntedBackground() {
       const maxWhispers = isMobile ? 1 : 3;
       if (activeWhispers.length >= maxWhispers) return;
 
-      const text =
-        forceText || HAUNTING_WHISPERS[Math.floor(Math.random() * HAUNTING_WHISPERS.length)];
-      const isLeft = Math.random() > 0.5;
-      const xMargin = isMobile ? 18 : 60;
-      const spawnX = isLeft
-        ? xMargin + Math.random() * (width * (isMobile ? 0.35 : 0.24))
-        : width * (isMobile ? 0.55 : 0.72) + Math.random() * (width * 0.25 - xMargin);
+      let text = forceText || HAUNTING_WHISPERS[Math.floor(Math.random() * HAUNTING_WHISPERS.length)];
+      if (isMobile && text.length > 25) {
+        text = text.slice(0, 24) + "...";
+      }
+
+      const fontSize = isMobile ? 11 : Math.floor(13 + Math.random() * 4);
+      const approxWidth = text.length * (fontSize * 0.6);
+
+      // On mobile, center safely within viewport margins
+      const spawnX = isMobile
+        ? Math.max(16, (width - approxWidth) / 2)
+        : Math.random() > 0.5
+          ? 40 + Math.random() * (width * 0.25)
+          : Math.max(40, width * 0.65 + Math.random() * (width * 0.25 - 60));
       const spawnY = 80 + Math.random() * (height - 180);
 
       activeWhispers.push({
         id: Math.random(),
         text: "",
         targetText: text,
-        x: Math.max(16, Math.min(width - 240, spawnX)),
+        x: Math.max(16, Math.min(width - approxWidth - 16, spawnX)),
         y: spawnY,
         opacity: 0,
         maxOpacity: mode === "blue" ? 0.6 : mode === "red" ? 0.45 : 0.3,
         decryptProgress: 0,
         life: 0,
         maxLife: 300 + Math.random() * 150,
-        fontSize: isMobile ? 11 : Math.floor(13 + Math.random() * 4),
+        fontSize,
         mode,
       });
     };
@@ -871,7 +876,7 @@ export default function HauntedBackground() {
           ctx.fillStyle = `rgba(156, 163, 175, ${w.opacity * 0.9})`;
         }
 
-        ctx.fillText(rendered, w.x, w.y);
+        ctx.fillText(rendered, w.x, w.y, Math.max(10, width - w.x - 12));
 
         if (w.life >= w.maxLife) {
           activeWhispers.splice(i, 1);
@@ -898,10 +903,10 @@ export default function HauntedBackground() {
   }, []);
 
   return (
-    <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden select-none bg-black">
+    <div className="pointer-events-none fixed inset-0 w-full max-w-full h-full -z-10 overflow-hidden select-none bg-black">
       <canvas
         ref={canvasRef}
-        className="block h-full w-full bg-black touch-none"
+        className="block w-full h-full max-w-full bg-black touch-none"
         aria-hidden="true"
       />
     </div>

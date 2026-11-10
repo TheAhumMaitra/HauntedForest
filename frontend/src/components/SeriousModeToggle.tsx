@@ -16,6 +16,7 @@ import {
   SERIOUS_MODE_EVENT,
   TRIGGER_MONSTER_EVENT,
 } from "./MonsterEncounter";
+import PossessedText from "./PossessedText";
 
 function subscribe(callback: () => void) {
   window.addEventListener(SERIOUS_MODE_EVENT, callback);
@@ -74,7 +75,9 @@ export function SeriousModeToggle() {
           ) : (
             <>
               <Ghost className="h-3.5 w-3.5 text-red-500 animate-pulse" />
-              <span className="hidden sm:inline">Haunted</span>
+              <span className="hidden sm:inline">
+                <PossessedText text="Haunted" />
+              </span>
             </>
           )}
         </Button>

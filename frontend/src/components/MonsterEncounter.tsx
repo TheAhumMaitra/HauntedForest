@@ -7,6 +7,7 @@ import { RotateCcw, Shield, Sparkles, Volume2, VolumeX, Zap } from "lucide-react
 export const SERIOUS_MODE_KEY = "haunted_forest_serious_mode";
 export const SERIOUS_MODE_EVENT = "haunted_serious_mode_change";
 export const TRIGGER_MONSTER_EVENT = "trigger_monster_encounter";
+export const EMF_ALERT_EVENT = "emf_meter_alert";
 export const ENCOUNTER_COUNT_KEY = "haunted_monster_encounter_count";
 export const ENCOUNTER_COUNT_EVENT = "haunted_monster_encounter_count_change";
 
@@ -171,6 +172,30 @@ export default function MonsterEncounter() {
     }, 50);
   }, [playEncounterRoar]);
 
+  const initiateEncounter = useCallback(() => {
+    if (localStorage.getItem(SERIOUS_MODE_KEY) === "true") {
+      return;
+    }
+
+    const isPC =
+      typeof window !== "undefined" &&
+      window.innerWidth >= 1024 &&
+      !/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+    if (isPC) {
+      // 4.2-second EMF Meter spike warning sequence on PC
+      window.dispatchEvent(
+        new CustomEvent(EMF_ALERT_EVENT, { detail: { durationMs: 4200 } })
+      );
+      setTimeout(() => {
+        triggerEncounter();
+      }, 4200);
+    } else {
+      // Mobile: Instant monster encounter without EMF delay
+      triggerEncounter();
+    }
+  }, [triggerEncounter]);
+
   const escapeEncounter = useCallback(() => {
     setIsActive(false);
     setIsPlayingAudio(false);
@@ -190,12 +215,12 @@ export default function MonsterEncounter() {
     if (encounterTimeoutRef.current) clearTimeout(encounterTimeoutRef.current);
     const nextDelay = 180000 + Math.random() * 240000;
     encounterTimeoutRef.current = setTimeout(() => {
-      triggerEncounter();
+      initiateEncounter();
     }, nextDelay);
 
     // Resume ambient random sounds
     scheduleNextAmbientRoar();
-  }, [triggerEncounter, scheduleNextAmbientRoar]);
+  }, [initiateEncounter, scheduleNextAmbientRoar]);
 
   const enableSeriousModeAndEscape = useCallback(() => {
     localStorage.setItem(SERIOUS_MODE_KEY, "true");
@@ -257,13 +282,30 @@ export default function MonsterEncounter() {
     const audioEl = audioRef.current;
     const initialDelay = 80000 + Math.random() * 90000;
     encounterTimeoutRef.current = setTimeout(() => {
-      triggerEncounter();
+      initiateEncounter();
     }, initialDelay);
 
     // Initial ambient sound scheduled for ~20-40s after mount
     scheduleNextAmbientRoar();
 
-    const handleTriggerEvent = () => triggerEncounter();
+    const handleTriggerEvent = (e?: Event) => {
+      const isDirect = (e as CustomEvent)?.detail?.immediate;
+      const isPC =
+        typeof window !== "undefined" &&
+        window.innerWidth >= 1024 &&
+        !/Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent);
+
+      if (isPC && !isDirect) {
+        window.dispatchEvent(
+          new CustomEvent(EMF_ALERT_EVENT, { detail: { durationMs: 4000 } })
+        );
+        setTimeout(() => {
+          triggerEncounter();
+        }, 4000);
+      } else {
+        triggerEncounter();
+      }
+    };
     const handleKeyDown = (e: KeyboardEvent) => {
       if (e.key === "Escape" && isActive) {
         escapeEncounter();
@@ -272,7 +314,7 @@ export default function MonsterEncounter() {
         (e.ctrlKey && e.shiftKey && e.key.toLowerCase() === "m") ||
         (e.altKey && e.key.toLowerCase() === "m")
       ) {
-        triggerEncounter();
+        initiateEncounter();
       }
     };
 
@@ -290,7 +332,7 @@ export default function MonsterEncounter() {
         audioEl.pause();
       }
     };
-  }, [isSeriousMode, isActive, triggerEncounter, escapeEncounter, scheduleNextAmbientRoar]);
+  }, [isSeriousMode, isActive, initiateEncounter, triggerEncounter, escapeEncounter, scheduleNextAmbientRoar]);
 
   // Mobile-safe scale factor: clamps to 1.7x on mobile so it never blows out screen width
   const maxScale = isMobileDevice ? 1.7 : 3.8;

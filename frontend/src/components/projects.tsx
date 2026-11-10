@@ -9,6 +9,7 @@ import {
 } from "@/components/ui/card";
 import { Button } from "./ui/button";
 import Hyperspeed from "./Hyperspeed";
+import PossessedText from "./PossessedText";
 
 type Project = {
   name: string;
@@ -102,7 +103,9 @@ export default function Projects() {
                 style={{ minHeight: "22rem" }}
               >
                 <CardHeader>
-                  <CardTitle>{project.name}</CardTitle>
+                  <CardTitle>
+                    <PossessedText text={project.name} />
+                  </CardTitle>
                 </CardHeader>
 
                 <CardContent className="flex-1 space-y-4">

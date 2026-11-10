@@ -287,3 +287,26 @@ section {
 .animate-monster-spasm {
   animation: monster-spasm 0.16s infinite ease-in-out;
 }
+
+/* --- Possessed Micro-Interactions --- */
+@keyframes possessed-shudder {
+  0%, 100% {
+    transform: translate(0, 0);
+  }
+  20% {
+    transform: translate(-1.5px, 1px) skewX(-1.5deg);
+  }
+  40% {
+    transform: translate(1.5px, -1px) skewX(1.5deg);
+  }
+  60% {
+    transform: translate(-1px, -0.5px);
+  }
+  80% {
+    transform: translate(1px, 0.5px);
+  }
+}
+
+.animate-possessed-shudder {
+  animation: possessed-shudder 0.28s ease-in-out;
+}

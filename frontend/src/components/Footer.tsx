@@ -1,4 +1,5 @@
 import Link from "next/link";
+import PossessedText from "./PossessedText";
 
 export default function Footer() {
   return (
@@ -6,7 +7,7 @@ export default function Footer() {
       <div className="text-center flex flex-col gap-4 sm:grid sm:grid-cols-3 w-full p-5 sm:p-9">
         <div className="flex flex-col justify-between items-center">
           <h2 className="font-bold p-2 mb-2 border-purple-700 border-2 rounded-3xl">
-            Ahum Maitra
+            <PossessedText text="Ahum Maitra" />
           </h2>
           <p className="font-medium text-xs sm:text-sm mt-2 sm:mt-3 leading-relaxed">
             This website contains works, documents, articles, etc and stories. This website itself is not a portfolio and this website can contain weird features, it also may contain sound effects sometimes (which is not harmful for ears [normal users]). It can show some videos and some new things I am exploring.

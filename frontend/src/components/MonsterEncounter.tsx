@@ -245,7 +245,7 @@ export default function MonsterEncounter() {
               startMonsterAudio();
             }
           }}
-          className="fixed inset-0 z-[999999] flex flex-col items-center justify-between p-4 sm:p-6 bg-black select-none overflow-hidden cursor-crosshair"
+          className="fixed inset-0 z-[999999] flex flex-col items-center justify-between p-3 sm:p-6 bg-black select-none overflow-hidden cursor-crosshair h-[100dvh] min-h-[100dvh] max-h-[100dvh]"
         >
           {/* 1. Pure Pitch Black Void Backdrop (#000000) */}
           <div className="pointer-events-none absolute inset-0 bg-black" />
@@ -266,30 +266,30 @@ export default function MonsterEncounter() {
           <div className="pointer-events-none absolute inset-0 z-10 bg-[linear-gradient(to_bottom,transparent_50%,rgba(0,0,0,0.75)_51%)] bg-[length:100%_4px] opacity-60" />
 
           {/* TOP BAR: Status & Scale Information */}
-          <header className="relative z-40 flex items-center justify-between w-full max-w-5xl pt-1">
-            <div className="flex items-center gap-2 font-mono text-xs uppercase tracking-[0.25em] text-red-500 animate-pulse font-bold">
-              <Zap className="h-4 w-4 text-red-500 animate-bounce" />
-              <span>
-                † ENCOUNTER #{encounterCount} — {encounterCount > 1 ? "IT IS GETTING CLOSER" : "IT CAN SEE YOU"} †
+          <header className="relative z-40 flex items-center justify-between w-full max-w-5xl pt-1 gap-2">
+            <div className="flex items-center gap-1.5 font-mono text-[10px] sm:text-xs uppercase tracking-wider sm:tracking-[0.25em] text-red-500 animate-pulse font-bold truncate">
+              <Zap className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-500 animate-bounce shrink-0" />
+              <span className="truncate">
+                † #{encounterCount} — {encounterCount > 1 ? "GETTING CLOSER" : "IT SEES YOU"} †
               </span>
             </div>
 
-            <div className="flex items-center gap-3">
-              <span className="font-mono text-[11px] uppercase tracking-wider text-red-300 bg-red-950/80 border border-red-800/80 px-2.5 py-0.5 rounded-full shadow-[0_0_12px_rgba(220,38,38,0.6)]">
-                Size: {(scaleFactor * 100).toFixed(0)}%
+            <div className="flex items-center gap-2 sm:gap-3 shrink-0">
+              <span className="font-mono text-[10px] sm:text-[11px] uppercase tracking-wider text-red-300 bg-red-950/80 border border-red-800/80 px-2 sm:px-2.5 py-0.5 rounded-full shadow-[0_0_12px_rgba(220,38,38,0.6)]">
+                {(scaleFactor * 100).toFixed(0)}%
               </span>
               {isPlayingAudio ? (
-                <Volume2 className="h-4 w-4 text-red-400" />
+                <Volume2 className="h-3.5 w-3.5 sm:h-4 sm:w-4 text-red-400" />
               ) : (
-                <span className="inline-flex items-center gap-1 text-[11px] text-zinc-400 underline cursor-pointer">
-                  <VolumeX className="h-4 w-4" /> Tap for sound
+                <span className="inline-flex items-center gap-1 text-[10px] sm:text-[11px] text-zinc-400 underline cursor-pointer touch-manipulation">
+                  <VolumeX className="h-3.5 w-3.5 sm:h-4 sm:w-4" /> Tap audio
                 </span>
               )}
             </div>
           </header>
 
-          {/* CENTER: The Monster Staring (Each time bigger + Light flickering spasm) */}
-          <div className="relative z-20 flex-1 w-full flex items-center justify-center overflow-hidden my-auto">
+          {/* CENTER: The Monster Staring (Pointer events disabled on wrapper to prevent button blocking) */}
+          <div className="relative z-20 flex-1 w-full flex items-center justify-center overflow-hidden my-auto pointer-events-none">
             <div
               className="relative flex items-center justify-center transition-transform duration-700 ease-out animate-monster-spasm"
               style={{
@@ -306,21 +306,21 @@ export default function MonsterEncounter() {
                 width={500}
                 height={500}
                 priority
-                className="relative h-auto w-64 sm:w-80 max-w-[85vw] max-h-[64vh] object-contain drop-shadow-[0_0_70px_rgba(220,38,38,0.95)] contrast-150 filter brightness-95"
+                className="relative h-auto w-56 sm:w-80 max-w-[85vw] max-h-[55vh] sm:max-h-[64vh] object-contain drop-shadow-[0_0_50px_rgba(220,38,38,0.9)] contrast-150 filter brightness-95"
               />
             </div>
           </div>
 
           {/* BOTTOM CONTROLS: Escape & Options */}
-          <footer className="relative z-40 flex flex-col items-center justify-center text-center max-w-xl px-4 pb-2">
-            <p className="glitch-text text-shadow-red font-mono font-bold text-sm sm:text-base tracking-widest text-red-400 mb-1">
+          <footer className="relative z-50 flex flex-col items-center justify-center text-center max-w-xl px-2 sm:px-4 pb-2 sm:pb-3 pointer-events-auto">
+            <p className="glitch-text text-shadow-red font-mono font-bold text-xs sm:text-base tracking-widest text-red-400 mb-0.5 sm:mb-1">
               YOU ARE TRAPPED IN THE HAUNTED FOREST
             </p>
-            <span className="block text-xs font-mono text-zinc-400 mb-4">
-              [ Press ESC or click below to break free ]
+            <span className="block text-[11px] sm:text-xs font-mono text-zinc-400 mb-2 sm:mb-4">
+              [ Tap below to break free ]
             </span>
 
-            <div className="flex flex-wrap items-center justify-center gap-3">
+            <div className="flex flex-wrap items-center justify-center gap-2 sm:gap-3">
               {/* Escape Button */}
               <button
                 onClick={(e) => {
@@ -328,22 +328,22 @@ export default function MonsterEncounter() {
                   escapeEncounter();
                 }}
                 type="button"
-                className="group relative flex items-center gap-2 rounded-full border-2 border-red-600 bg-red-950/90 px-8 py-3.5 font-mono text-sm font-bold uppercase tracking-widest text-red-100 shadow-[0_0_35px_rgba(220,38,38,0.85)] transition-all hover:scale-105 hover:bg-red-800 hover:border-red-400 active:scale-95"
+                className="group relative flex items-center gap-2 rounded-full border-2 border-red-600 bg-red-950/90 px-6 sm:px-8 py-3 sm:py-3.5 font-mono text-xs sm:text-sm font-bold uppercase tracking-wider sm:tracking-widest text-red-100 shadow-[0_0_35px_rgba(220,38,38,0.85)] transition-all hover:scale-105 hover:bg-red-800 hover:border-red-400 active:scale-95 cursor-pointer touch-manipulation"
               >
                 <Sparkles className="h-4 w-4 text-red-400 group-hover:rotate-45 transition-transform" />
                 <span>Escape The Nightmare</span>
               </button>
 
-              {/* Reset Size Button (shown if size has increased) */}
+              {/* Reset Size Button */}
               {encounterCount > 1 && (
                 <button
                   onClick={resetSize}
                   type="button"
-                  className="flex items-center gap-1.5 rounded-full border border-zinc-700 bg-zinc-900/80 px-4 py-3 font-mono text-xs text-zinc-300 hover:text-white hover:border-zinc-500 hover:bg-zinc-800 transition-all"
+                  className="flex items-center gap-1.5 rounded-full border border-zinc-700 bg-zinc-900/80 px-3.5 py-2.5 sm:py-3 font-mono text-xs text-zinc-300 hover:text-white hover:border-zinc-500 hover:bg-zinc-800 transition-all cursor-pointer touch-manipulation"
                   title="Reset monster size back to 100%"
                 >
                   <RotateCcw className="h-3.5 w-3.5 text-zinc-400" />
-                  <span>Reset Size (1x)</span>
+                  <span>Reset (1x)</span>
                 </button>
               )}
             </div>
@@ -355,10 +355,10 @@ export default function MonsterEncounter() {
                 enableSeriousModeAndEscape();
               }}
               type="button"
-              className="mt-4 flex items-center gap-1.5 font-mono text-xs text-zinc-400 hover:text-zinc-200 transition-colors underline underline-offset-4"
+              className="mt-2.5 sm:mt-4 flex items-center gap-1.5 font-mono text-[11px] sm:text-xs text-zinc-400 hover:text-zinc-200 transition-colors underline underline-offset-4 cursor-pointer touch-manipulation"
             >
               <Shield className="h-3.5 w-3.5 text-emerald-400" />
-              <span>Turn on Serious Mode (Disable all jumpscares)</span>
+              <span>Turn on Serious Mode</span>
             </button>
           </footer>
         </div>

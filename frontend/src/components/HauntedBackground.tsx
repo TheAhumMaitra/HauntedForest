@@ -5,7 +5,7 @@ import { SERIOUS_MODE_KEY, SERIOUS_MODE_EVENT } from "./MonsterEncounter";
 
 export const TRIGGER_BLUE_FIRE_EVENT = "trigger_blue_fire_event";
 
-// Haunting cryptic phrases that manifest in the black, red & blue fire forest
+// Haunting cryptic phrases that manifest in the forest
 const HAUNTING_WHISPERS = [
   "the trees are watching",
   "blood in the root system",
@@ -29,6 +29,8 @@ const HAUNTING_WHISPERS = [
 
 const GLYPHS = "†‡§ψ░▒▓█ᚠᚢᚦᚨᚱᚲᛋᛏ01XØΔΨΩ#%*!?><~/\\";
 
+type DotColorType = "blood" | "crimson" | "scarlet" | "ruby";
+
 interface RedDot {
   x: number;
   y: number;
@@ -37,12 +39,11 @@ interface RedDot {
   vx: number;
   vy: number;
   radius: number;
-  baseRadius: number;
   alpha: number;
   baseAlpha: number;
   pulsePhase: number;
   pulseSpeed: number;
-  colorType: "blood" | "crimson" | "scarlet" | "ruby";
+  colorType: DotColorType;
 }
 
 interface FloatingPngEye {
@@ -70,7 +71,7 @@ interface BlueFlame {
   alpha: number;
   life: number;
   maxLife: number;
-  colorTier: number; // 0: White-blue core, 1: Cyan mid, 2: Deep blue tip
+  colorTier: number; // 0: White-blue, 1: Cyan mid, 2: Deep blue tip
 }
 
 interface Whisper {
@@ -108,6 +109,37 @@ interface BloodRipple {
   isBlue: boolean;
 }
 
+// Pre-render glowing dot sprite onto an offscreen canvas to avoid costly ctx.shadowBlur
+function createGlowSprite(
+  innerColor: string,
+  glowColor: string,
+  spriteSize = 32
+): HTMLCanvasElement {
+  const c = document.createElement("canvas");
+  c.width = spriteSize;
+  c.height = spriteSize;
+  const ctx = c.getContext("2d");
+  if (!ctx) return c;
+
+  const center = spriteSize / 2;
+  const grad = ctx.createRadialGradient(center, center, 0, center, center, center);
+  grad.addColorStop(0, glowColor);
+  grad.addColorStop(0.35, glowColor.replace(/[\d.]+\)$/, "0.45)"));
+  grad.addColorStop(0.7, glowColor.replace(/[\d.]+\)$/, "0.12)"));
+  grad.addColorStop(1, "rgba(0, 0, 0, 0)");
+
+  ctx.fillStyle = grad;
+  ctx.fillRect(0, 0, spriteSize, spriteSize);
+
+  // Bright inner core
+  ctx.fillStyle = innerColor;
+  ctx.beginPath();
+  ctx.arc(center, center, spriteSize * 0.16, 0, Math.PI * 2);
+  ctx.fill();
+
+  return c;
+}
+
 export default function HauntedBackground() {
   const canvasRef = useRef<HTMLCanvasElement>(null);
 
@@ -118,7 +150,18 @@ export default function HauntedBackground() {
     const ctx = canvas.getContext("2d", { alpha: false });
     if (!ctx) return;
 
-    let animationFrameId: number;
+    // Detect mobile device
+    const isMobile =
+      typeof window !== "undefined" &&
+      (window.innerWidth < 768 ||
+        (typeof navigator !== "undefined" &&
+          /Mobi|Android|iPhone|iPad|iPod/i.test(navigator.userAgent)) ||
+        (window.matchMedia && window.matchMedia("(pointer: coarse)").matches));
+
+    const prefersReducedMotion =
+      typeof window !== "undefined" &&
+      window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+
     let width = (canvas.width = window.innerWidth);
     let height = (canvas.height = window.innerHeight);
 
@@ -131,22 +174,72 @@ export default function HauntedBackground() {
     };
     window.addEventListener(SERIOUS_MODE_EVENT, handleSeriousChange);
 
-    // Mouse coordinates
-    const mouse = { x: -2000, y: -2000, targetX: -2000, targetY: -2000 };
+    // Pre-rendered sprite cache for zero-cost hardware-accelerated glowing dots
+    const spriteCache: Record<DotColorType, HTMLCanvasElement> = {
+      blood: createGlowSprite("#ef4444", "rgba(239, 68, 68, 0.95)", 32),
+      crimson: createGlowSprite("#dc2626", "rgba(220, 38, 38, 0.9)", 32),
+      scarlet: createGlowSprite("#fe4b4b", "rgba(254, 75, 75, 0.95)", 32),
+      ruby: createGlowSprite("#b91c1c", "rgba(185, 28, 28, 0.85)", 32),
+    };
 
-    // 1. Grid & Floating Red & Ash Dots
+    // Pre-rendered soft glow for floating eyes (red and blue)
+    const eyeRedGlow = createGlowSprite("#dc2626", "rgba(220, 38, 38, 0.5)", 64);
+    const eyeBlueGlow = createGlowSprite("#38bdf8", "rgba(56, 189, 248, 0.5)", 64);
+
+    // Cached ambient background vignettes (re-created only on resize)
+    let redVignette: CanvasGradient;
+    let blueVignette: CanvasGradient;
+
+    const updateVignettes = () => {
+      const radius = Math.max(width, height) * 0.85;
+
+      redVignette = ctx.createRadialGradient(
+        width * 0.5,
+        height * 0.5,
+        width * 0.05,
+        width * 0.5,
+        height * 0.5,
+        radius
+      );
+      redVignette.addColorStop(0, "rgba(25, 2, 6, 0.2)");
+      redVignette.addColorStop(0.5, "rgba(10, 1, 3, 0.25)");
+      redVignette.addColorStop(1, "rgba(0, 0, 0, 1.0)");
+
+      blueVignette = ctx.createRadialGradient(
+        width * 0.5,
+        height * 0.5,
+        width * 0.05,
+        width * 0.5,
+        height * 0.5,
+        radius
+      );
+      blueVignette.addColorStop(0, "rgba(8, 28, 55, 0.42)");
+      blueVignette.addColorStop(0.5, "rgba(4, 14, 30, 0.26)");
+      blueVignette.addColorStop(1, "rgba(0, 0, 0, 1.0)");
+    };
+    updateVignettes();
+
+    // Mouse coordinates with auto-reset on mobile touch release
+    const mouse = { x: -2000, y: -2000, targetX: -2000, targetY: -2000 };
+    let touchResetTimeout: ReturnType<typeof setTimeout> | null = null;
+
+    // 1. Grid & Floating Red & Ash Dots (optimized count for mobile vs desktop)
     const dots: RedDot[] = [];
-    const spacing = Math.max(32, Math.min(48, Math.floor(Math.sqrt((width * height) / 1000))));
+    // Mobile gets wider spacing -> ~40-60 dots. Desktop gets ~100-140 dots.
+    const spacing = isMobile
+      ? Math.max(64, Math.min(84, Math.floor(Math.sqrt((width * height) / 8000))))
+      : Math.max(48, Math.min(64, Math.floor(Math.sqrt((width * height) / 3600))));
+
     const cols = Math.ceil(width / spacing) + 2;
     const rows = Math.ceil(height / spacing) + 2;
 
     for (let r = 0; r < rows; r++) {
       for (let c = 0; c < cols; c++) {
-        const baseX = c * spacing + (Math.random() - 0.5) * 16;
-        const baseY = r * spacing + (Math.random() - 0.5) * 16;
+        const baseX = c * spacing + (Math.random() - 0.5) * 20;
+        const baseY = r * spacing + (Math.random() - 0.5) * 20;
 
         const roll = Math.random();
-        let colorType: RedDot["colorType"] = "crimson";
+        let colorType: DotColorType = "crimson";
         if (roll < 0.45) colorType = "blood";
         else if (roll < 0.75) colorType = "crimson";
         else if (roll < 0.90) colorType = "scarlet";
@@ -154,28 +247,27 @@ export default function HauntedBackground() {
 
         const baseRadius =
           colorType === "blood" || colorType === "scarlet"
-            ? 1.3 + Math.random() * 2.0
-            : 0.9 + Math.random() * 1.5;
+            ? (isMobile ? 1.4 : 1.6) + Math.random() * 1.5
+            : (isMobile ? 1.0 : 1.2) + Math.random() * 1.2;
 
         dots.push({
           x: baseX,
           y: baseY,
           baseX,
           baseY,
-          vx: (Math.random() - 0.5) * 0.3,
-          vy: -0.15 - Math.random() * 0.35,
+          vx: (Math.random() - 0.5) * 0.25,
+          vy: -0.12 - Math.random() * 0.3,
           radius: baseRadius,
-          baseRadius,
-          alpha: 0.15 + Math.random() * 0.5,
-          baseAlpha: 0.2 + Math.random() * 0.55,
+          alpha: 0.15 + Math.random() * 0.45,
+          baseAlpha: 0.2 + Math.random() * 0.5,
           pulsePhase: Math.random() * Math.PI * 2,
-          pulseSpeed: 0.02 + Math.random() * 0.04,
+          pulseSpeed: 0.015 + Math.random() * 0.03,
           colorType,
         });
       }
     }
 
-    // 2. Floating eye.png Entities (in the 10s and 20s)
+    // 2. Floating eye.png Entities (subtle, eerie, restrained count on mobile)
     const eyeImg = new window.Image();
     eyeImg.src = "/eye.png";
     let eyeImgLoaded = false;
@@ -184,22 +276,23 @@ export default function HauntedBackground() {
     };
 
     const floatingEyes: FloatingPngEye[] = [];
-    const EYE_COUNT = Math.min(22, Math.max(14, Math.floor((width * height) / 48000)));
+    const EYE_COUNT = isMobile ? 4 : Math.min(14, Math.max(8, Math.floor((width * height) / 90000)));
+
     for (let i = 0; i < EYE_COUNT; i++) {
-      const scale = 0.16 + Math.random() * 0.18;
+      const scale = isMobile ? 0.12 + Math.random() * 0.1 : 0.15 + Math.random() * 0.15;
       floatingEyes.push({
         x: Math.random() * width,
         y: Math.random() * height,
-        vx: (Math.random() - 0.5) * 0.45,
-        vy: -0.15 - Math.random() * 0.35,
+        vx: (Math.random() - 0.5) * 0.35,
+        vy: -0.12 - Math.random() * 0.28,
         width: 227 * scale,
         height: 148 * scale,
-        alpha: 0.2 + Math.random() * 0.45,
-        baseAlpha: 0.25 + Math.random() * 0.45,
+        alpha: 0.18 + Math.random() * 0.35,
+        baseAlpha: 0.2 + Math.random() * 0.35,
         phase: Math.random() * Math.PI * 2,
-        phaseSpeed: 0.015 + Math.random() * 0.03,
-        rotation: (Math.random() - 0.5) * 0.25,
-        vRot: (Math.random() - 0.5) * 0.003,
+        phaseSpeed: 0.012 + Math.random() * 0.02,
+        rotation: (Math.random() - 0.5) * 0.2,
+        vRot: (Math.random() - 0.5) * 0.002,
       });
     }
 
@@ -207,30 +300,33 @@ export default function HauntedBackground() {
     const blueFlames: BlueFlame[] = [];
     let isBlueFireActive = false;
     let blueFireDuration = 0;
-    // Blue fire triggers periodically every 45 to 80 seconds
-    let nextBlueFireTime = performance.now() + 18000 + Math.random() * 30000;
+    let nextBlueFireTime = performance.now() + 20000 + Math.random() * 30000;
 
-    const startBlueFire = (durationFrames = 550) => {
+    const startBlueFire = (durationFrames = isMobile ? 400 : 520) => {
       if (isSeriousMode) return;
       isBlueFireActive = true;
-      blueFireDuration = durationFrames; // ~9 seconds
+      blueFireDuration = durationFrames;
       spawnWhisper("† THE BLUE SOULFIRE RISES FROM THE ABYSS †", "blue");
     };
 
     const spawnBlueFlameParticle = (startX?: number, startY?: number) => {
+      const maxFlames = isMobile ? 24 : 60;
+      if (blueFlames.length >= maxFlames) return;
+
       const px = startX ?? Math.random() * width;
       const py = startY ?? height + 10;
-      const baseSize = 14 + Math.random() * 26;
+      const baseSize = (isMobile ? 10 : 14) + Math.random() * (isMobile ? 16 : 22);
+
       blueFlames.push({
         x: px,
         y: py,
-        vx: (Math.random() - 0.5) * 1.8,
-        vy: -3.2 - Math.random() * 4.8,
+        vx: (Math.random() - 0.5) * 1.5,
+        vy: -2.8 - Math.random() * 3.8,
         size: baseSize,
         baseSize,
-        alpha: 0.6 + Math.random() * 0.4,
+        alpha: 0.55 + Math.random() * 0.35,
         life: 0,
-        maxLife: 40 + Math.random() * 50,
+        maxLife: isMobile ? 32 + Math.random() * 35 : 40 + Math.random() * 50,
         colorTier: Math.random() > 0.65 ? 0 : Math.random() > 0.3 ? 1 : 2,
       });
     };
@@ -240,27 +336,30 @@ export default function HauntedBackground() {
     let nextWhisperTime = performance.now() + 4000;
 
     const spawnWhisper = (forceText?: string, mode: "red" | "blue" | "ash" = "red") => {
+      const maxWhispers = isMobile ? 1 : 3;
+      if (activeWhispers.length >= maxWhispers) return;
+
       const text =
         forceText || HAUNTING_WHISPERS[Math.floor(Math.random() * HAUNTING_WHISPERS.length)];
       const isLeft = Math.random() > 0.5;
-      const xMargin = width > 1024 ? 60 : 16;
+      const xMargin = isMobile ? 18 : 60;
       const spawnX = isLeft
-        ? xMargin + Math.random() * (width * 0.24)
-        : width * 0.72 + Math.random() * (width * 0.24 - xMargin);
+        ? xMargin + Math.random() * (width * (isMobile ? 0.35 : 0.24))
+        : width * (isMobile ? 0.55 : 0.72) + Math.random() * (width * 0.25 - xMargin);
       const spawnY = 80 + Math.random() * (height - 180);
 
       activeWhispers.push({
         id: Math.random(),
         text: "",
         targetText: text,
-        x: spawnX,
+        x: Math.max(16, Math.min(width - 240, spawnX)),
         y: spawnY,
         opacity: 0,
         maxOpacity: mode === "blue" ? 0.6 : mode === "red" ? 0.45 : 0.3,
         decryptProgress: 0,
         life: 0,
-        maxLife: 320 + Math.random() * 180,
-        fontSize: Math.floor(13 + Math.random() * 5),
+        maxLife: 300 + Math.random() * 150,
+        fontSize: isMobile ? 11 : Math.floor(13 + Math.random() * 4),
         mode,
       });
     };
@@ -272,19 +371,19 @@ export default function HauntedBackground() {
     const spawnEye = () => {
       const isLeft = Math.random() > 0.5;
       const eyeX = isLeft
-        ? 100 + Math.random() * (width * 0.25)
-        : width * 0.7 + Math.random() * (width * 0.2);
+        ? (isMobile ? 40 : 100) + Math.random() * (width * 0.25)
+        : width * 0.68 + Math.random() * (width * 0.22);
       const eyeY = 120 + Math.random() * (height - 240);
 
       ghostEye = {
         x: eyeX,
         y: eyeY,
         alpha: 0,
-        maxAlpha: 0.65 + Math.random() * 0.25,
+        maxAlpha: 0.6 + Math.random() * 0.2,
         state: "fading_in",
         timer: 0,
-        eyeDistance: 26 + Math.random() * 14,
-        eyeSize: 4.5 + Math.random() * 2.5,
+        eyeDistance: (isMobile ? 20 : 26) + Math.random() * 12,
+        eyeSize: (isMobile ? 3.5 : 4.5) + Math.random() * 2,
       };
     };
 
@@ -292,40 +391,77 @@ export default function HauntedBackground() {
     const ripples: BloodRipple[] = [];
 
     const handlePointerDown = (e: PointerEvent) => {
+      // Don't flood ripples on touch scroll
+      if (ripples.length >= (isMobile ? 3 : 8)) return;
+
       ripples.push({
         x: e.clientX,
         y: e.clientY,
         radius: 4,
-        maxRadius: 180 + Math.random() * 100,
-        alpha: 0.6,
+        maxRadius: isMobile ? 100 + Math.random() * 50 : 160 + Math.random() * 80,
+        alpha: 0.55,
         isBlue: isBlueFireActive,
       });
 
-      // If blue fire is active, burst blue fire from click
       if (isBlueFireActive && !isSeriousMode) {
-        for (let i = 0; i < 8; i++) {
-          spawnBlueFlameParticle(e.clientX + (Math.random() - 0.5) * 40, e.clientY);
+        const burstCount = isMobile ? 3 : 6;
+        for (let i = 0; i < burstCount; i++) {
+          spawnBlueFlameParticle(e.clientX + (Math.random() - 0.5) * 30, e.clientY);
         }
       }
 
-      if (Math.random() < 0.35 && activeWhispers.length < 3 && !isSeriousMode) {
+      if (Math.random() < 0.3 && !isSeriousMode) {
         spawnWhisper(undefined, isBlueFireActive ? "blue" : "red");
       }
     };
 
     const handleTriggerBlueFire = () => {
-      startBlueFire(600);
+      startBlueFire(500);
     };
 
-    // Event Listeners
+    // Responsive resize handler: Debounced and ignores small mobile address bar height fluctuations
+    let resizeTimer: ReturnType<typeof setTimeout> | null = null;
+    let lastWidth = window.innerWidth;
+    let lastHeight = window.innerHeight;
+
     const handleResize = () => {
-      width = canvas.width = window.innerWidth;
-      height = canvas.height = window.innerHeight;
+      if (resizeTimer) clearTimeout(resizeTimer);
+      resizeTimer = setTimeout(() => {
+        const newW = window.innerWidth;
+        const newH = window.innerHeight;
+
+        // On mobile, scrolling down/up triggers 40-60px height change due to address bar collapse.
+        // We only reallocate canvas if width changes or height changes by more than 110px.
+        const widthChanged = Math.abs(newW - lastWidth) > 5;
+        const heightChanged = Math.abs(newH - lastHeight) > 110;
+
+        if (widthChanged || heightChanged) {
+          lastWidth = width = canvas.width = newW;
+          lastHeight = height = canvas.height = newH;
+          updateVignettes();
+
+          // Reposition any out-of-bounds dots smoothly
+          for (let i = 0; i < dots.length; i++) {
+            if (dots[i].x > width) dots[i].x = Math.random() * width;
+            if (dots[i].y > height) dots[i].y = Math.random() * height;
+          }
+        }
+      }, 150);
     };
 
+    // Pointer move & touch handling
     const handlePointerMove = (e: PointerEvent) => {
       mouse.targetX = e.clientX;
       mouse.targetY = e.clientY;
+
+      if (e.pointerType === "touch") {
+        if (touchResetTimeout) clearTimeout(touchResetTimeout);
+        // On mobile, reset mouse repulsion after touch ends or pauses
+        touchResetTimeout = setTimeout(() => {
+          mouse.targetX = -2000;
+          mouse.targetY = -2000;
+        }, 800);
+      }
     };
 
     const handlePointerLeave = () => {
@@ -333,33 +469,70 @@ export default function HauntedBackground() {
       mouse.targetY = -2000;
     };
 
-    window.addEventListener("resize", handleResize);
+    const handlePointerUp = (e: PointerEvent) => {
+      if (e.pointerType === "touch") {
+        if (touchResetTimeout) clearTimeout(touchResetTimeout);
+        touchResetTimeout = setTimeout(() => {
+          mouse.targetX = -2000;
+          mouse.targetY = -2000;
+        }, 500);
+      }
+    };
+
+    // Pause rendering when document is hidden (tab switched)
+    let isTabVisible = true;
+    const handleVisibilityChange = () => {
+      isTabVisible = !document.hidden;
+    };
+
+    window.addEventListener("resize", handleResize, { passive: true });
     window.addEventListener("pointermove", handlePointerMove, { passive: true });
     window.addEventListener("pointerleave", handlePointerLeave, { passive: true });
+    window.addEventListener("pointerup", handlePointerUp, { passive: true });
+    window.addEventListener("pointercancel", handlePointerLeave, { passive: true });
     window.addEventListener("pointerdown", handlePointerDown, { passive: true });
+    window.addEventListener("visibilitychange", handleVisibilityChange);
+    window.addEventListener(SERIOUS_MODE_EVENT, handleSeriousChange);
     window.addEventListener(TRIGGER_BLUE_FIRE_EVENT, handleTriggerBlueFire);
 
-    // Initial whisper
+    // Initial subtle whisper after mount
     setTimeout(() => {
       if (!isSeriousMode) spawnWhisper();
-    }, 2000);
+    }, 2500);
 
-    // Main Render Loop
-    const render = (time: number) => {
-      mouse.x += (mouse.targetX - mouse.x) * 0.1;
-      mouse.y += (mouse.targetY - mouse.y) * 0.1;
+    // Main Render Loop with Delta Time for smooth frame rates across 60Hz/120Hz/mobile
+    let animationFrameId: number;
+    let lastTime = performance.now();
 
-      // Check Blue Fire Timer ("sometimes blue fire should come")
-      if (time > nextBlueFireTime && !isBlueFireActive && !isSeriousMode) {
-        startBlueFire(500); // 500 frames (~8.3 seconds)
-        nextBlueFireTime = time + 55000 + Math.random() * 75000;
+    const render = (currentTime: number) => {
+      animationFrameId = requestAnimationFrame(render);
+
+      // Don't waste GPU when tab is hidden in background
+      if (!isTabVisible) {
+        lastTime = currentTime;
+        return;
+      }
+
+      // Delta time normalization (target 60fps = ~16.6ms)
+      const elapsed = currentTime - lastTime;
+      lastTime = currentTime;
+      // Cap delta time to prevent giant jumps after lag spikes
+      const dt = Math.min(elapsed / 16.67, 2.5);
+
+      // Interpolate mouse smoothly
+      mouse.x += (mouse.targetX - mouse.x) * (0.12 * dt);
+      mouse.y += (mouse.targetY - mouse.y) * (0.12 * dt);
+
+      // Check Blue Fire Timer
+      if (currentTime > nextBlueFireTime && !isBlueFireActive && !isSeriousMode) {
+        startBlueFire(isMobile ? 380 : 500);
+        nextBlueFireTime = currentTime + 55000 + Math.random() * 75000;
       }
 
       if (isBlueFireActive) {
-        blueFireDuration--;
-        // Spawn active blue flame particles along bottom edge and random clusters
+        blueFireDuration -= dt;
         if (!isSeriousMode) {
-          const spawnCount = Math.min(8, Math.max(3, Math.floor(width / 320)));
+          const spawnCount = isMobile ? 1 : Math.min(6, Math.max(2, Math.floor(width / 360)));
           for (let i = 0; i < spawnCount; i++) {
             spawnBlueFlameParticle();
           }
@@ -367,92 +540,72 @@ export default function HauntedBackground() {
         if (blueFireDuration <= 0) {
           isBlueFireActive = false;
         }
-      } else if (!isSeriousMode && Math.random() < 0.08) {
-        // Occasional stray blue wisp floating up even when full fire is resting
+      } else if (!isSeriousMode && Math.random() < (isMobile ? 0.03 : 0.07)) {
+        // Occasional stray blue wisp floating up
         spawnBlueFlameParticle(Math.random() * width, height - 10);
       }
 
       // Check Ghost Eyes Timer
-      if (time > nextEyeTime && !ghostEye && !isSeriousMode) {
+      if (currentTime > nextEyeTime && !ghostEye && !isSeriousMode) {
         spawnEye();
-        nextEyeTime = time + 35000 + Math.random() * 55000;
+        nextEyeTime = currentTime + 35000 + Math.random() * 55000;
       }
 
       // Check Whispers Timer
-      if (time > nextWhisperTime && activeWhispers.length < 3 && !isSeriousMode) {
+      if (
+        currentTime > nextWhisperTime &&
+        activeWhispers.length < (isMobile ? 1 : 3) &&
+        !isSeriousMode
+      ) {
         spawnWhisper(undefined, isBlueFireActive ? "blue" : Math.random() > 0.3 ? "red" : "ash");
-        nextWhisperTime = time + 25000 + Math.random() * 45000;
+        nextWhisperTime = currentTime + 25000 + Math.random() * 45000;
       }
 
-      // 1. Deep Pitch Black Background (#000000)
+      // 1. Deep Pitch Black Background with Cached Ambient Vignette
       ctx.fillStyle = "#000000";
       ctx.fillRect(0, 0, width, height);
 
-      // Core Ambient Vignette
-      const coreVignette = ctx.createRadialGradient(
-        width * 0.5,
-        height * 0.5,
-        width * 0.05,
-        width * 0.5,
-        height * 0.5,
-        Math.max(width, height) * 0.85
-      );
-
-      if (isBlueFireActive) {
-        // Mysterious blue soulfire ambience
-        coreVignette.addColorStop(0, "rgba(8, 28, 55, 0.4)");
-        coreVignette.addColorStop(0.5, "rgba(4, 14, 30, 0.25)");
-        coreVignette.addColorStop(1, "rgba(0, 0, 0, 1.0)");
-      } else {
-        // Pitch black with subtle sinister red depths
-        coreVignette.addColorStop(0, "rgba(25, 2, 6, 0.18)");
-        coreVignette.addColorStop(0.5, "rgba(10, 1, 3, 0.22)");
-        coreVignette.addColorStop(1, "rgba(0, 0, 0, 1.0)");
-      }
-
-      ctx.fillStyle = coreVignette;
+      ctx.fillStyle = isBlueFireActive ? blueVignette : redVignette;
       ctx.fillRect(0, 0, width, height);
 
-      // 2. Expand & Draw Ripples
+      // In Serious Mode, stop after ambient dark background
+      if (isSeriousMode) {
+        return;
+      }
+
+      // 2. Expand & Draw Ripples (fast stroke without costly shadowBlur)
       for (let i = ripples.length - 1; i >= 0; i--) {
         const rip = ripples[i];
-        rip.radius += 3.5;
-        rip.alpha *= 0.96;
+        rip.radius += 3.2 * dt;
+        rip.alpha *= Math.pow(0.96, dt);
 
-        ctx.save();
         ctx.beginPath();
         ctx.arc(rip.x, rip.y, rip.radius, 0, Math.PI * 2);
-        if (rip.isBlue) {
-          ctx.strokeStyle = `rgba(56, 189, 248, ${rip.alpha * 0.5})`;
-          ctx.shadowColor = "#0284c7";
-        } else {
-          ctx.strokeStyle = `rgba(239, 68, 68, ${rip.alpha * 0.4})`;
-          ctx.shadowColor = "#dc2626";
-        }
         ctx.lineWidth = 1.5;
-        ctx.shadowBlur = 12;
+        ctx.strokeStyle = rip.isBlue
+          ? `rgba(56, 189, 248, ${rip.alpha * 0.6})`
+          : `rgba(239, 68, 68, ${rip.alpha * 0.5})`;
         ctx.stroke();
-        ctx.restore();
 
-        if (rip.alpha < 0.01 || rip.radius > rip.maxRadius) {
+        if (rip.alpha < 0.015 || rip.radius > rip.maxRadius) {
           ripples.splice(i, 1);
         }
       }
 
-      // 3. Render Black, Red & Grey Dots
-      const speedMultiplier = isBlueFireActive ? 1.6 : 1;
+      // 3. Render Black & Red Dots using Pre-rendered Sprite Cache (Blazing Fast)
+      const speedMultiplier = (isBlueFireActive ? 1.5 : 1) * (prefersReducedMotion ? 0.2 : 1);
 
       for (let i = 0; i < dots.length; i++) {
         const d = dots[i];
 
-        d.pulsePhase += d.pulseSpeed * speedMultiplier;
-        d.alpha = Math.max(0.08, d.baseAlpha + Math.sin(d.pulsePhase) * 0.25);
+        d.pulsePhase += d.pulseSpeed * speedMultiplier * dt;
+        d.alpha = Math.max(0.08, d.baseAlpha + Math.sin(d.pulsePhase) * 0.22);
 
         // Drift upward
-        d.y += d.vy * speedMultiplier;
-        d.x += (d.vx + Math.sin(d.pulsePhase * 0.8) * 0.25) * speedMultiplier;
+        d.y += d.vy * speedMultiplier * dt;
+        d.x += (d.vx + Math.sin(d.pulsePhase * 0.8) * 0.2) * speedMultiplier * dt;
 
-        // Screen wraps
+        // Screen wrap
         if (d.y < -15) {
           d.y = height + 15;
           d.x = Math.random() * width;
@@ -460,53 +613,44 @@ export default function HauntedBackground() {
         if (d.x < -15) d.x = width + 15;
         if (d.x > width + 15) d.x = -15;
 
-        // Mouse interaction
+        // Mouse repulsion
         const dx = mouse.x - d.x;
         const dy = mouse.y - d.y;
-        const dist = Math.sqrt(dx * dx + dy * dy);
-        if (dist < 110) {
-          const force = (110 - dist) / 110;
-          d.x -= (dx / dist) * force * 4.5;
-          d.y -= (dy / dist) * force * 4.5;
-          d.alpha = Math.min(0.9, d.alpha + 0.3);
+        const distSq = dx * dx + dy * dy;
+        const repelRadius = isMobile ? 85 : 110;
+        const repelRadiusSq = repelRadius * repelRadius;
+
+        if (distSq < repelRadiusSq && distSq > 0) {
+          const dist = Math.sqrt(distSq);
+          const force = (repelRadius - dist) / repelRadius;
+          d.x -= (dx / dist) * force * 4.2 * dt;
+          d.y -= (dy / dist) * force * 4.2 * dt;
+          d.alpha = Math.min(0.9, d.alpha + 0.25);
         }
 
-        // Draw Dot
-        ctx.beginPath();
-        ctx.arc(d.x, d.y, d.radius, 0, Math.PI * 2);
-
-        if (d.colorType === "blood") {
-          ctx.fillStyle = `rgba(239, 68, 68, ${d.alpha})`;
-          ctx.shadowColor = "#ef4444";
-          ctx.shadowBlur = 5;
-        } else if (d.colorType === "crimson") {
-          ctx.fillStyle = `rgba(220, 38, 38, ${d.alpha * 0.9})`;
-          ctx.shadowColor = "#dc2626";
-          ctx.shadowBlur = 4;
-        } else if (d.colorType === "scarlet") {
-          ctx.fillStyle = `rgba(254, 75, 75, ${d.alpha * 0.95})`;
-          ctx.shadowColor = "#fe4b4b";
-          ctx.shadowBlur = 6;
-        } else {
-          ctx.fillStyle = `rgba(185, 28, 28, ${d.alpha * 0.85})`;
-          ctx.shadowColor = "#991b1b";
-          ctx.shadowBlur = 3;
-        }
-
-        ctx.fill();
-        ctx.shadowBlur = 0;
+        // Draw hardware-accelerated sprite
+        const sprite = spriteCache[d.colorType];
+        const spriteSize = d.radius * 6.5;
+        ctx.globalAlpha = d.alpha;
+        ctx.drawImage(
+          sprite,
+          d.x - spriteSize * 0.5,
+          d.y - spriteSize * 0.5,
+          spriteSize,
+          spriteSize
+        );
       }
+      ctx.globalAlpha = 1.0;
 
-      // 4. Render Floating eye.png Entities (in the 10s and 20s)
-      if (eyeImgLoaded && !isSeriousMode) {
+      // 4. Render Floating eye.png Entities
+      if (eyeImgLoaded) {
         for (let i = 0; i < floatingEyes.length; i++) {
           const eye = floatingEyes[i];
-          eye.phase += eye.phaseSpeed * speedMultiplier;
-          eye.y += eye.vy * speedMultiplier;
-          eye.x += (eye.vx + Math.sin(eye.phase * 0.7) * 0.4) * speedMultiplier;
-          eye.rotation += eye.vRot;
+          eye.phase += eye.phaseSpeed * speedMultiplier * dt;
+          eye.y += eye.vy * speedMultiplier * dt;
+          eye.x += (eye.vx + Math.sin(eye.phase * 0.7) * 0.35) * speedMultiplier * dt;
+          eye.rotation += eye.vRot * dt;
 
-          // Screen wraps
           if (eye.y < -eye.height - 20) {
             eye.y = height + 20;
             eye.x = Math.random() * width;
@@ -514,66 +658,70 @@ export default function HauntedBackground() {
           if (eye.x < -eye.width - 20) eye.x = width + 20;
           if (eye.x > width + 20) eye.x = -eye.width - 20;
 
-          // Mouse interaction (drifting gently away from cursor)
+          // Mouse interaction (gentle drift)
           const edx = mouse.x - (eye.x + eye.width * 0.5);
           const edy = mouse.y - (eye.y + eye.height * 0.5);
-          const eDist = Math.sqrt(edx * edx + edy * edy);
-          if (eDist < 120) {
-            const eForce = (120 - eDist) / 120;
-            eye.x -= (edx / eDist) * eForce * 3.5;
-            eye.y -= (edy / eDist) * eForce * 3.5;
+          const eDistSq = edx * edx + edy * edy;
+          const eRepelRadius = isMobile ? 80 : 120;
+          if (eDistSq < eRepelRadius * eRepelRadius && eDistSq > 0) {
+            const eDist = Math.sqrt(eDistSq);
+            const eForce = (eRepelRadius - eDist) / eRepelRadius;
+            eye.x -= (edx / eDist) * eForce * 3.2 * dt;
+            eye.y -= (edy / eDist) * eForce * 3.2 * dt;
           }
 
           ctx.save();
           ctx.translate(eye.x + eye.width * 0.5, eye.y + eye.height * 0.5);
           ctx.rotate(eye.rotation);
-          const currentAlpha = Math.max(0.08, eye.baseAlpha + Math.sin(eye.phase) * 0.25);
-          ctx.globalAlpha = isBlueFireActive
-            ? Math.min(1, currentAlpha * 1.4)
-            : currentAlpha;
-          ctx.shadowColor = isBlueFireActive ? "#38bdf8" : "#dc2626";
-          ctx.shadowBlur = 10;
+
+          const currentAlpha = Math.max(0.08, eye.baseAlpha + Math.sin(eye.phase) * 0.22);
+          const drawAlpha = isBlueFireActive ? Math.min(1, currentAlpha * 1.3) : currentAlpha;
+
+          // Soft ambient glow behind eye without expensive shadowBlur
+          const glowSprite = isBlueFireActive ? eyeBlueGlow : eyeRedGlow;
+          ctx.globalAlpha = drawAlpha * 0.7;
+          ctx.drawImage(
+            glowSprite,
+            -eye.width * 0.75,
+            -eye.height * 0.75,
+            eye.width * 1.5,
+            eye.height * 1.5
+          );
+
+          ctx.globalAlpha = drawAlpha;
           ctx.drawImage(eyeImg, -eye.width * 0.5, -eye.height * 0.5, eye.width, eye.height);
           ctx.restore();
         }
       }
 
-      // 5. Render Blue Soulfire Particles ("sometimes blue fire should come")
-      if (blueFlames.length > 0 && !isSeriousMode) {
+      // 5. Render Blue Soulfire Particles (Additive blending for natural intense glow)
+      if (blueFlames.length > 0) {
         ctx.save();
-        ctx.globalCompositeOperation = "lighter"; // Additive blending for blazing fire effect
+        ctx.globalCompositeOperation = "lighter";
 
         for (let i = blueFlames.length - 1; i >= 0; i--) {
           const f = blueFlames[i];
-          f.life++;
+          f.life += dt;
 
-          // Sinusoidal flame sway
-          f.x += f.vx + Math.sin(f.life * 0.15) * 1.2;
-          f.y += f.vy;
+          f.x += (f.vx + Math.sin(f.life * 0.15) * 1.1) * dt;
+          f.y += f.vy * dt;
 
-          // Flame size tapers down as it reaches the top
           const progress = f.life / f.maxLife;
-          f.size = f.baseSize * (1 - progress * 0.85);
-          const flameAlpha = f.alpha * (1 - progress);
+          f.size = Math.max(1, f.baseSize * (1 - progress * 0.85));
+          const flameAlpha = Math.max(0, f.alpha * (1 - progress));
 
           ctx.beginPath();
-          ctx.arc(f.x, f.y, Math.max(1, f.size), 0, Math.PI * 2);
+          ctx.arc(f.x, f.y, f.size, 0, Math.PI * 2);
 
           if (f.colorTier === 0) {
-            // White-hot spectral blue core
+            // White-hot spectral core
             ctx.fillStyle = `rgba(224, 242, 254, ${flameAlpha})`;
-            ctx.shadowColor = "#bae6fd";
-            ctx.shadowBlur = f.size * 2;
           } else if (f.colorTier === 1) {
             // Radiant electric cyan
             ctx.fillStyle = `rgba(56, 189, 248, ${flameAlpha * 0.9})`;
-            ctx.shadowColor = "#0284c7";
-            ctx.shadowBlur = f.size * 2.5;
           } else {
-            // Deep sapphire blue flame tip
+            // Sapphire blue
             ctx.fillStyle = `rgba(37, 99, 235, ${flameAlpha * 0.75})`;
-            ctx.shadowColor = "#1d4ed8";
-            ctx.shadowBlur = f.size * 1.8;
           }
 
           ctx.fill();
@@ -586,22 +734,22 @@ export default function HauntedBackground() {
         ctx.restore();
       }
 
-      // 6. Ghost Eyes Staring Anomaly
-      if (ghostEye && !isSeriousMode) {
-        ghostEye.timer++;
+      // 6. Ghost Eyes Anomaly (smooth dual ellipse glow without shadowBlur)
+      if (ghostEye) {
+        ghostEye.timer += dt;
 
         if (ghostEye.state === "fading_in") {
-          ghostEye.alpha += 0.015;
+          ghostEye.alpha += 0.018 * dt;
           if (ghostEye.alpha >= ghostEye.maxAlpha) {
             ghostEye.alpha = ghostEye.maxAlpha;
             ghostEye.state = "staring";
           }
         } else if (ghostEye.state === "staring") {
-          if (ghostEye.timer > 220) {
+          if (ghostEye.timer > 200) {
             ghostEye.state = "blinking";
           }
         } else if (ghostEye.state === "blinking") {
-          ghostEye.alpha *= 0.85;
+          ghostEye.alpha *= Math.pow(0.85, dt);
           if (ghostEye.alpha < 0.05) {
             ghostEye.state = "fading_out";
           }
@@ -616,10 +764,11 @@ export default function HauntedBackground() {
           if (mouse.x > 0) {
             const edx = mouse.x - ghostEye.x;
             const edy = mouse.y - ghostEye.y;
-            const eDist = Math.sqrt(edx * edx + edy * edy);
-            if (eDist > 0) {
-              eyeGazeX = (edx / eDist) * 1.8;
-              eyeGazeY = (edy / eDist) * 1.5;
+            const eDistSq = edx * edx + edy * edy;
+            if (eDistSq > 0) {
+              const eDist = Math.sqrt(eDistSq);
+              eyeGazeX = (edx / eDist) * 1.6;
+              eyeGazeY = (edy / eDist) * 1.4;
             }
           }
 
@@ -628,7 +777,23 @@ export default function HauntedBackground() {
           const eyeY = ghostEye.y;
 
           [leftEyeX, rightEyeX].forEach((ex) => {
-            ctx.save();
+            // Outer subtle aura
+            ctx.beginPath();
+            ctx.ellipse(
+              ex,
+              eyeY,
+              ghostEye!.eyeSize * 2.2,
+              ghostEye!.eyeSize * 1.3,
+              0,
+              0,
+              Math.PI * 2
+            );
+            ctx.fillStyle = isBlueFireActive
+              ? `rgba(56, 189, 248, ${eyeA * 0.35})`
+              : `rgba(239, 68, 68, ${eyeA * 0.3})`;
+            ctx.fill();
+
+            // Iris
             ctx.beginPath();
             ctx.ellipse(
               ex,
@@ -639,16 +804,12 @@ export default function HauntedBackground() {
               0,
               Math.PI * 2
             );
-            if (isBlueFireActive) {
-              ctx.fillStyle = `rgba(56, 189, 248, ${eyeA * 0.8})`;
-              ctx.shadowColor = "#0284c7";
-            } else {
-              ctx.fillStyle = `rgba(239, 68, 68, ${eyeA * 0.75})`;
-              ctx.shadowColor = "#dc2626";
-            }
-            ctx.shadowBlur = 14;
+            ctx.fillStyle = isBlueFireActive
+              ? `rgba(56, 189, 248, ${eyeA * 0.85})`
+              : `rgba(239, 68, 68, ${eyeA * 0.8})`;
             ctx.fill();
 
+            // Pupil
             ctx.beginPath();
             ctx.ellipse(
               ex + eyeGazeX,
@@ -660,9 +821,7 @@ export default function HauntedBackground() {
               Math.PI * 2
             );
             ctx.fillStyle = `rgba(2, 1, 3, ${eyeA * 0.95})`;
-            ctx.shadowBlur = 0;
             ctx.fill();
-            ctx.restore();
           });
         }
       }
@@ -670,18 +829,18 @@ export default function HauntedBackground() {
       // 7. Cryptic Decrypting Whispers
       for (let i = activeWhispers.length - 1; i >= 0; i--) {
         const w = activeWhispers[i];
-        w.life++;
+        w.life += dt;
 
-        if (w.life < 50) {
-          w.opacity = (w.life / 50) * w.maxOpacity;
-        } else if (w.life > w.maxLife - 50) {
-          w.opacity = Math.max(0, ((w.maxLife - w.life) / 50) * w.maxOpacity);
+        if (w.life < 45) {
+          w.opacity = (w.life / 45) * w.maxOpacity;
+        } else if (w.life > w.maxLife - 45) {
+          w.opacity = Math.max(0, ((w.maxLife - w.life) / 45) * w.maxOpacity);
         } else {
           w.opacity = w.maxOpacity;
         }
 
         if (w.decryptProgress < w.targetText.length) {
-          w.decryptProgress += 0.22;
+          w.decryptProgress += 0.22 * dt;
         }
 
         const revealed = Math.floor(w.decryptProgress);
@@ -700,45 +859,39 @@ export default function HauntedBackground() {
           }
         }
 
-        w.y -= 0.1;
+        w.y -= 0.08 * dt;
 
-        ctx.save();
         ctx.font = `${w.fontSize}px var(--font-mono, monospace)`;
-        ctx.letterSpacing = "0.14em";
 
         if (w.mode === "blue") {
           ctx.fillStyle = `rgba(56, 189, 248, ${w.opacity})`;
-          ctx.shadowColor = "#38bdf8";
-          ctx.shadowBlur = 12;
         } else if (w.mode === "red") {
           ctx.fillStyle = `rgba(239, 68, 68, ${w.opacity})`;
-          ctx.shadowColor = "#ef4444";
-          ctx.shadowBlur = 10;
         } else {
           ctx.fillStyle = `rgba(156, 163, 175, ${w.opacity * 0.9})`;
-          ctx.shadowColor = "#9ca3af";
-          ctx.shadowBlur = 6;
         }
 
         ctx.fillText(rendered, w.x, w.y);
-        ctx.restore();
 
         if (w.life >= w.maxLife) {
           activeWhispers.splice(i, 1);
         }
       }
-
-      animationFrameId = requestAnimationFrame(render);
     };
 
     animationFrameId = requestAnimationFrame(render);
 
     return () => {
       cancelAnimationFrame(animationFrameId);
+      if (touchResetTimeout) clearTimeout(touchResetTimeout);
+      if (resizeTimer) clearTimeout(resizeTimer);
       window.removeEventListener("resize", handleResize);
       window.removeEventListener("pointermove", handlePointerMove);
       window.removeEventListener("pointerleave", handlePointerLeave);
+      window.removeEventListener("pointerup", handlePointerUp);
+      window.removeEventListener("pointercancel", handlePointerLeave);
       window.removeEventListener("pointerdown", handlePointerDown);
+      window.removeEventListener("visibilitychange", handleVisibilityChange);
       window.removeEventListener(SERIOUS_MODE_EVENT, handleSeriousChange);
       window.removeEventListener(TRIGGER_BLUE_FIRE_EVENT, handleTriggerBlueFire);
     };
@@ -748,7 +901,7 @@ export default function HauntedBackground() {
     <div className="pointer-events-none fixed inset-0 -z-10 overflow-hidden select-none bg-black">
       <canvas
         ref={canvasRef}
-        className="block h-full w-full bg-black"
+        className="block h-full w-full bg-black touch-none"
         aria-hidden="true"
       />
     </div>

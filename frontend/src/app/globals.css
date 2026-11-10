@@ -124,15 +124,21 @@
   body {
     @apply bg-background text-foreground;
   }
-  html {
+  html,
+  body {
     @apply font-mono;
+    max-width: 100vw;
+    overflow-x: hidden;
+    width: 100%;
   }
 }
 
-section{
-    margin: 1rem;
-    padding: 1rem;
-  }
+section {
+  margin: 1rem 0;
+  padding: 1rem;
+  max-width: 100%;
+  box-sizing: border-box;
+}
 
 /* --- Horror Light Flicker & Strobe Effects --- */
 @keyframes horror-light-flicker {

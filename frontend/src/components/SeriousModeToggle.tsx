@@ -49,9 +49,8 @@ export function SeriousModeToggle() {
     if (isSerious) {
       toggleMode(false);
     }
-    setTimeout(() => {
-      window.dispatchEvent(new CustomEvent(TRIGGER_MONSTER_EVENT));
-    }, 150);
+    // Dispatch synchronously to preserve browser user activation for instant autoplay
+    window.dispatchEvent(new CustomEvent(TRIGGER_MONSTER_EVENT));
   };
 
   return (
@@ -60,7 +59,7 @@ export function SeriousModeToggle() {
         <Button
           variant="outline"
           size="sm"
-          className={`h-9 gap-1.5 px-3 font-mono text-xs transition-all ${
+          className={`h-9 gap-1.5 px-3 font-mono text-xs transition-all touch-manipulation cursor-pointer ${
             isSerious
               ? "border-emerald-600/40 bg-emerald-950/20 text-emerald-400 hover:bg-emerald-950/40 hover:text-emerald-300"
               : "border-red-600/50 bg-red-950/30 text-red-400 hover:bg-red-950/50 hover:text-red-300 hover:border-red-500"
@@ -81,7 +80,10 @@ export function SeriousModeToggle() {
         </Button>
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent align="end" className="w-56 font-mono text-xs">
+      <DropdownMenuContent
+        align="end"
+        className="w-56 max-w-[calc(100vw-2rem)] font-mono text-xs z-[99999]"
+      >
         <DropdownMenuLabel className="flex items-center justify-between text-xs font-semibold">
           <span>Website Atmosphere</span>
           {isSerious ? (
@@ -93,10 +95,11 @@ export function SeriousModeToggle() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
+          onSelect={() => toggleMode(true)}
           onClick={() => toggleMode(true)}
-          className={`flex items-center gap-2 cursor-pointer ${isSerious ? "font-bold text-emerald-400" : ""}`}
+          className={`flex items-center gap-2 cursor-pointer touch-manipulation ${isSerious ? "font-bold text-emerald-400" : ""}`}
         >
-          <Shield className="h-4 w-4 text-emerald-400" />
+          <Shield className="h-4 w-4 text-emerald-400 shrink-0" />
           <div className="flex flex-col">
             <span>Serious Mode</span>
             <span className="text-[10px] text-muted-foreground font-sans">
@@ -106,10 +109,11 @@ export function SeriousModeToggle() {
         </DropdownMenuItem>
 
         <DropdownMenuItem
+          onSelect={() => toggleMode(false)}
           onClick={() => toggleMode(false)}
-          className={`flex items-center gap-2 cursor-pointer ${!isSerious ? "font-bold text-red-400" : ""}`}
+          className={`flex items-center gap-2 cursor-pointer touch-manipulation ${!isSerious ? "font-bold text-red-400" : ""}`}
         >
-          <Ghost className="h-4 w-4 text-red-500" />
+          <Ghost className="h-4 w-4 text-red-500 shrink-0" />
           <div className="flex flex-col">
             <span>Haunted Mode</span>
             <span className="text-[10px] text-muted-foreground font-sans">
@@ -121,14 +125,15 @@ export function SeriousModeToggle() {
         <DropdownMenuSeparator />
 
         <DropdownMenuItem
+          onSelect={testTrigger}
           onClick={testTrigger}
-          className="flex items-center gap-2 text-destructive cursor-pointer hover:!text-destructive hover:!bg-destructive/10"
+          className="flex items-center gap-2 text-destructive cursor-pointer touch-manipulation hover:!text-destructive hover:!bg-destructive/10"
         >
-          <ShieldAlert className="h-4 w-4" />
+          <ShieldAlert className="h-4 w-4 shrink-0" />
           <div className="flex flex-col">
             <span>Summon Monster (Test)</span>
             <span className="text-[10px] text-muted-foreground font-sans">
-              Appears in pitch black & grows bigger each time
+              Appears in pitch black with sound
             </span>
           </div>
         </DropdownMenuItem>

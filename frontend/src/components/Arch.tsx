@@ -3,7 +3,7 @@ import ParticleText from './ParticleText';
 export default function Arch() {
     return(
         <>
-          <div>
+          <div className="w-full max-w-full overflow-hidden">
               <ParticleText
     text="I USE ARCH BTW ;)"
     particleSize={2.2}
@@ -22,7 +22,7 @@ export default function Arch() {
     repelRadius={120}
     idleDrift={0.8}
     trigger="mount"
-    fontSize="clamp(3.5rem, 13vw, 9rem)"
+    fontSize="clamp(1.75rem, 10vw, 7rem)"
     fontWeight={800}
     fontFamily="inherit"
     glow

@@ -1,0 +1,492 @@
+/* Tufte CSS integration for Haunted Forest
+   Faithfully implementing Edward Tufte's typography & layout principles:
+   https://edwardtufte.github.io/tufte-css/
+   Adapted for modern responsive reading & dark/light theme harmony.
+*/
+
+/* 1. Official ET Book Typefaces */
+@font-face {
+  font-family: "et-book";
+  src: url("/et-book/et-book-roman-line-figures/et-book-roman-line-figures.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("/et-book/et-book-display-italic-old-style-figures/et-book-display-italic-old-style-figures.woff") format("woff");
+  font-weight: 400;
+  font-style: italic;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("/et-book/et-book-bold-line-figures/et-book-bold-line-figures.woff") format("woff");
+  font-weight: 700;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book";
+  src: url("/et-book/et-book-semi-bold-old-style-figures/et-book-semi-bold-old-style-figures.woff") format("woff");
+  font-weight: 600;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "et-book-roman-old-style";
+  src: url("/et-book/et-book-roman-old-style-figures/et-book-roman-old-style-figures.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+/* 2. Tufte Container & Layout */
+.tufte-layout {
+  --tufte-font: "et-book", var(--font-heading), Palatino, "Palatino Linotype", "Book Antiqua", Georgia, serif;
+  --tufte-sans: "Gill Sans", "Gill Sans MT", Calibri, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --tufte-mono: var(--font-mono), Consolas, "Liberation Mono", Menlo, Courier, monospace;
+  font-family: var(--tufte-font);
+  counter-reset: sidenote-counter;
+  line-height: 1.8;
+  color: var(--foreground);
+}
+
+.tufte-article {
+  width: 100%;
+  max-width: 48rem; /* 768px default optimal reading measure */
+  margin-left: auto;
+  margin-right: auto;
+  position: relative;
+  counter-reset: sidenote-counter;
+}
+
+@media (min-width: 1280px) {
+  /* On wide screens, reserve space for margin notes so the article stays balanced */
+  .tufte-article {
+    max-width: 66rem;
+    padding-right: 18rem;
+  }
+}
+
+/* Headings */
+.tufte-layout h1 {
+  font-family: var(--tufte-font);
+  font-weight: 600;
+  margin-top: 2.75rem;
+  margin-bottom: 1.25rem;
+  font-size: 2.4rem;
+  line-height: 1.2;
+  letter-spacing: -0.02em;
+  color: var(--foreground);
+}
+
+.tufte-layout h2 {
+  font-family: var(--tufte-font);
+  font-style: normal;
+  font-weight: 600;
+  margin-top: 2.75rem;
+  margin-bottom: 1rem;
+  font-size: 1.85rem;
+  line-height: 1.25;
+  letter-spacing: -0.015em;
+  padding-bottom: 0.5rem;
+  border-bottom: 1px solid color-mix(in srgb, var(--border) 60%, transparent);
+  color: var(--foreground);
+}
+
+.tufte-layout h3 {
+  font-family: var(--tufte-font);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.45rem;
+  margin-top: 2rem;
+  margin-bottom: 0.75rem;
+  line-height: 1.3;
+  color: var(--foreground);
+}
+
+.tufte-layout h4 {
+  font-family: var(--tufte-font);
+  font-style: italic;
+  font-weight: 600;
+  font-size: 1.2rem;
+  margin-top: 1.5rem;
+  margin-bottom: 0.5rem;
+  color: var(--foreground);
+}
+
+.tufte-layout hr {
+  display: block;
+  height: 1px;
+  width: 100%;
+  border: 0;
+  border-top: 1px solid var(--border);
+  margin: 2.5em 0;
+  padding: 0;
+}
+
+/* Text & Body Content Widths */
+.tufte-layout p,
+.tufte-layout dl,
+.tufte-layout ol,
+.tufte-layout ul {
+  font-size: 1.16rem;
+  line-height: 1.85;
+}
+
+.tufte-layout p {
+  margin-top: 1.35rem;
+  margin-bottom: 1.35rem;
+  padding-right: 0;
+  vertical-align: baseline;
+  width: 100%;
+}
+
+.tufte-layout section > p,
+.tufte-layout article > p {
+  width: 100%;
+}
+
+.tufte-layout ol,
+.tufte-layout ul {
+  width: 100%;
+  padding-left: 1.75rem;
+  margin-top: 1rem;
+  margin-bottom: 1.25rem;
+}
+
+.tufte-layout ul {
+  list-style-type: disc;
+}
+
+.tufte-layout ol {
+  list-style-type: decimal;
+}
+
+.tufte-layout li {
+  margin-top: 0.4rem;
+  margin-bottom: 0.4rem;
+}
+
+.tufte-layout sup {
+  line-height: 0;
+  font-size: 0.75em;
+  vertical-align: super;
+}
+
+/* Epigraphs */
+.tufte-layout div.epigraph {
+  margin: 2.5em 0 3em 0;
+}
+
+.tufte-layout div.epigraph > blockquote {
+  margin-top: 1.5em;
+  margin-bottom: 1.5em;
+  border-left: none;
+  font-style: italic;
+  padding-left: 0;
+}
+
+.tufte-layout div.epigraph > blockquote > p {
+  font-style: italic;
+  font-size: 1.2rem;
+  line-height: 1.6;
+}
+
+.tufte-layout div.epigraph > blockquote > footer {
+  font-style: normal;
+  text-align: right;
+  width: 100%;
+  font-size: 1rem;
+  color: var(--muted-foreground);
+  margin-top: 0.5rem;
+}
+
+.tufte-layout div.epigraph > blockquote > footer > cite {
+  font-style: italic;
+}
+
+/* Blockquotes */
+.tufte-layout blockquote {
+  font-size: 1.15rem;
+  margin-top: 1.75rem;
+  margin-bottom: 1.75rem;
+  padding-left: 1.25rem;
+  border-left: 3px solid var(--destructive);
+  color: var(--foreground);
+}
+
+.tufte-layout blockquote p {
+  width: 100%;
+}
+
+.tufte-layout blockquote footer {
+  width: 100%;
+  font-size: 0.95rem;
+  text-align: right;
+  color: var(--muted-foreground);
+}
+
+/* Figures & Images */
+.tufte-layout figure {
+  padding: 0;
+  border: 0;
+  font-size: 100%;
+  vertical-align: baseline;
+  width: 100%;
+  max-width: 100%;
+  margin: 2em 0 2.5em 0;
+}
+
+.tufte-layout figcaption {
+  font-size: 0.92rem;
+  line-height: 1.5;
+  color: var(--muted-foreground);
+  margin-top: 0.6rem;
+}
+
+.tufte-layout img {
+  max-width: 100%;
+  height: auto;
+  border-radius: 8px;
+}
+
+/* Sidenotes & Margin Notes (Desktop >= 1280px) */
+@media (min-width: 1280px) {
+  .tufte-layout .sidenote,
+  .tufte-layout .marginnote {
+    float: right;
+    clear: right;
+    margin-right: -17rem;
+    width: 15rem;
+    margin-top: 0.2rem;
+    margin-bottom: 0.75rem;
+    font-size: 0.88rem;
+    line-height: 1.45;
+    vertical-align: baseline;
+    position: relative;
+    display: block;
+    color: var(--muted-foreground);
+    border-left: 2px solid color-mix(in srgb, var(--destructive) 40%, transparent);
+    padding-left: 0.75rem;
+  }
+
+  .tufte-layout .margin-figure {
+    float: right;
+    clear: right;
+    margin-right: -17rem;
+    width: 15rem;
+    margin-top: 0.5rem;
+    margin-bottom: 1.5rem;
+    display: block;
+  }
+
+  .tufte-layout .margin-figure figcaption {
+    font-size: 0.82rem;
+    margin-top: 0.4rem;
+  }
+
+  /* Full Width Breakout on Desktop */
+  .tufte-layout .fullwidth,
+  .tufte-layout div.fullwidth,
+  .tufte-layout table.fullwidth,
+  .tufte-layout figure.fullwidth,
+  .tufte-layout pre.fullwidth {
+    width: calc(100% + 18rem);
+    max-width: calc(100% + 18rem);
+    margin-right: -18rem;
+    clear: both;
+  }
+}
+
+.tufte-layout .sidenote-number {
+  counter-increment: sidenote-counter;
+}
+
+.tufte-layout .sidenote-number:after,
+.tufte-layout .sidenote:before {
+  font-family: et-book-roman-old-style, Palatino, serif;
+  position: relative;
+  vertical-align: baseline;
+}
+
+.tufte-layout .sidenote-number:after {
+  content: counter(sidenote-counter);
+  font-size: 0.85rem;
+  top: -0.5rem;
+  left: 0.1rem;
+  color: var(--destructive);
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.tufte-layout .sidenote:before {
+  content: counter(sidenote-counter) " ";
+  font-size: 0.85rem;
+  top: -0.2rem;
+  color: var(--destructive);
+  font-weight: 600;
+}
+
+.tufte-layout input.margin-toggle {
+  display: none;
+}
+
+.tufte-layout label.sidenote-number {
+  display: inline-block;
+  cursor: pointer;
+}
+
+.tufte-layout label.margin-toggle:not(.sidenote-number) {
+  display: none;
+  cursor: pointer;
+  color: var(--destructive);
+  font-weight: bold;
+}
+
+/* Tables */
+.tufte-layout div.table-wrapper {
+  overflow-x: auto;
+  font-family: var(--tufte-sans);
+  margin: 2rem 0;
+  width: 100%;
+}
+
+.tufte-layout table {
+  width: 100%;
+  border-top: 2px solid var(--border);
+  border-bottom: 2px solid var(--border);
+  font-size: 1rem;
+  line-height: 1.5;
+  border-collapse: collapse;
+  margin: 1rem 0;
+}
+
+.tufte-layout th {
+  font-weight: 600;
+  padding: 0.6rem 0.8rem;
+  text-align: left;
+  border-bottom: 1px solid var(--border);
+  font-family: var(--tufte-sans);
+}
+
+.tufte-layout td {
+  padding: 0.5rem 0.8rem;
+  vertical-align: top;
+  border-top: 1px solid color-mix(in srgb, var(--border) 50%, transparent);
+}
+
+.tufte-layout tr:first-child td {
+  border-top: none;
+}
+
+/* Typography Helpers */
+.tufte-layout .sans {
+  font-family: var(--tufte-sans);
+  letter-spacing: 0.02em;
+}
+
+.tufte-layout .newthought {
+  font-variant: small-caps;
+  font-size: 1.18em;
+  letter-spacing: 0.06em;
+}
+
+.tufte-layout .numeral {
+  font-family: "et-book-roman-old-style", Palatino, serif;
+}
+
+/* Links */
+.tufte-layout a {
+  text-decoration: underline;
+  text-underline-offset: 0.18em;
+  text-decoration-thickness: 0.06em;
+  transition: opacity 0.15s ease;
+}
+
+.tufte-layout a:hover {
+  opacity: 0.75;
+}
+
+/* Code & Pre */
+.tufte-layout code {
+  font-family: var(--tufte-mono);
+  font-size: 0.9em;
+  padding: 0.15em 0.35em;
+  border-radius: 4px;
+  background-color: color-mix(in srgb, var(--muted) 70%, transparent);
+  border: 1px solid var(--border);
+}
+
+.tufte-layout pre > code {
+  background-color: transparent;
+  border: none;
+  padding: 0;
+}
+
+.tufte-layout pre {
+  font-family: var(--tufte-mono);
+  font-size: 0.92rem;
+  width: 100%;
+  overflow-x: auto;
+  margin: 1.5rem 0;
+  border-radius: 8px;
+}
+
+/* KaTeX Math Tweaks inside Tufte */
+.tufte-layout .katex-display {
+  width: 100%;
+  overflow-x: auto;
+  overflow-y: hidden;
+  padding: 0.8rem 0;
+  margin: 1.5rem 0;
+}
+
+.tufte-layout .katex {
+  font-size: 1.1em;
+}
+
+/* Collapsible Notes on Viewports < 1280px */
+@media (max-width: 1279px) {
+  .tufte-article {
+    width: 100%;
+    max-width: 48rem;
+    padding-right: 0;
+  }
+
+  /* Reveal the margin toggle button for unnumbered margin notes */
+  .tufte-layout label.margin-toggle:not(.sidenote-number) {
+    display: inline;
+    font-size: 1.1rem;
+    padding: 0 0.25rem;
+  }
+
+  /* Hidden until clicked on non-wide viewports */
+  .tufte-layout .sidenote,
+  .tufte-layout .marginnote,
+  .tufte-layout .margin-figure {
+    display: none;
+  }
+
+  /* Expanding notes when toggled */
+  .tufte-layout .margin-toggle:checked + .sidenote,
+  .tufte-layout .margin-toggle:checked + .marginnote,
+  .tufte-layout .margin-toggle:checked + .margin-figure {
+    display: block;
+    float: none;
+    clear: both;
+    width: 100%;
+    margin: 0.9rem auto;
+    padding: 0.75rem 1rem;
+    border-left: 3px solid var(--destructive);
+    background-color: color-mix(in srgb, var(--muted) 45%, transparent);
+    border-radius: 6px;
+    font-size: 0.95rem;
+    line-height: 1.55;
+  }
+}

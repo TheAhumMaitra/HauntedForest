@@ -1,0 +1,107 @@
+---
+image: /post2.jpg
+title: "Visual Explanations: Tufte CSS & MDX in Haunted Forest"
+categories:
+  - design
+  - typography
+  - mdx
+date: 2026-11-10
+author: Ahum Maitra
+excerpt: An exploration of Edward Tufte's principles of information design, implemented with modern MDX, KaTeX math typesetting, and responsive sidenotes.
+---
+
+<Epigraph
+  quote="Explanatory elegance means that graphical clarity and typographic rhythm serve one sovereign purpose: revealing the truth of the data."
+  author="Edward R. Tufte"
+  source="Visual Explanations (1997)"
+/>
+
+<NewThought>Good typography</NewThought> is invisible when done well, yet profoundly impactful in shaping how we absorb ideas. Edward Tufte’s classic layout principles prioritize the reading experience through generous margins, high-density typographic notes, and tight visual integration between prose and imagery.
+
+In this article, we demonstrate our new **MDX engine** and **Tufte CSS** integration within Haunted Forest.
+
+## Sidenotes and Margin Notes
+
+The defining signature of a Tufte layout is the margin note column. Instead of burying references at the bottom of the page in distant footnotes, notes and commentary sit right beside the text they illuminate.<Sidenote>This is an automatically numbered sidenote. On wide screens, it sits peacefully in the right-hand margin. On mobile screens, tap the superscript number to reveal it inline.</Sidenote>
+
+You can also use unnumbered margin notes for informal commentary or definitions.<MarginNote>Margin notes don't increment the note counter, providing a clean annotation style for parenthetical thoughts.</MarginNote> Readers can follow the core narrative without distraction or explore the margin for rich context.
+
+## Mathematical Precision with KaTeX
+
+Scientific and algorithmic thinking requires clear notation. Both inline equations such as $E = mc^2$ and Euler's formula $e^{i\pi} + 1 = 0$ render smoothly alongside text.
+
+For more complex derivations, display math blocks provide centered, high-clarity typography:
+
+$$
+\int_{-\infty}^{\infty} e^{-x^2} \, dx = \sqrt{\pi}
+$$
+
+Or Gauss's Law for electromagnetism in differential form:
+
+$$
+\nabla \cdot \mathbf{E} = \frac{\rho}{\varepsilon_0}
+$$
+
+## Figures, Diagrams & Data Graphics
+
+Tufte argued fiercely against "chartjunk"—extraneous decoration that obscures data. Below is a standard figure where the caption floats alongside in the margin:
+
+<Figure
+  src="/post1.jpg"
+  alt="Haunted Forest scenery"
+  caption="Figure 1: Standard figures align with the main reading column while their descriptive captions sit in the margin alongside."
+/>
+
+When visual content demands expansive space—such as panoramic photography, maps, or wide timelines—we can break out into a full-width presentation:
+
+<FullWidthFigure
+  src="/post2.jpg"
+  alt="Full-width visual presentation"
+  caption="Figure 2: A full-width presentation breaks beyond the standard reading measure to present high-density graphics with utmost clarity."
+/>
+
+## Code & Algorithmic Blocks
+
+Code blocks feature syntax highlighting, filename indicators, and a one-click copy button:
+
+```typescript
+// mdx-sample.ts: Interactive configuration
+export interface SiteTheme {
+  name: string;
+  typeface: "et-book" | "sans" | "mono";
+  enableSidenotes: boolean;
+  maxWidth: number;
+}
+
+export function initializeTheme(config: SiteTheme) {
+  console.log(`Loading ${config.name} with ${config.typeface}...`);
+  return { ...config, active: true };
+}
+```
+
+## Structured Information & Tables
+
+Tables follow Tufte's minimal aesthetic: subtle horizontal rules, no vertical lines, and generous spacing:
+
+| Property | Default Measure | Purpose |
+| :--- | :--- | :--- |
+| Text column | $55\%$ container width | Optimal reading measure ($60\text{–}75$ characters per line) |
+| Margin column | $50\%$ text width | Sidenotes, margin citations, and figure commentary |
+| Font Stack | ET Book / Palatino | Classical Bembo-inspired humanist serif |
+| Math Engine | KaTeX + Remark Math | Hardware-accelerated TeX typesetting |
+
+## Modern Admonitions & Callouts
+
+For actionable tips, warnings, and notes, callout blocks provide focused visual emphasis:
+
+<Callout type="tip" title="Responsive Design">
+On mobile and tablet devices with screens narrower than 768px, margin notes gracefully collapse into interactive badges so your content remains effortlessly readable.
+</Callout>
+
+<Callout type="note" title="Component Flexibility">
+Because our articles are compiled with MDX, you can embed any custom React component directly inside your Markdown files without leaving your writing flow.
+</Callout>
+
+---
+
+<NewThought>Every article</NewThought> written in Haunted Forest can now leverage the full expressiveness of Markdown, interactive MDX components, and Edward Tufte’s timeless typographic principles.

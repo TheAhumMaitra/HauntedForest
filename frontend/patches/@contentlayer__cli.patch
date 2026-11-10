@@ -1,0 +1,26 @@
+diff --git a/dist/commands/_BaseCommand.js b/dist/commands/_BaseCommand.js
+index 5f7892637c185d36d9e489b803d8df450f4f7f1b..249c7180eb2da2486184ab7b1c918b5882351c99 100644
+--- a/dist/commands/_BaseCommand.js
++++ b/dist/commands/_BaseCommand.js
+@@ -20,7 +20,7 @@ export class BaseCommand extends Command {
+         this.execute = () => pipe(this.executeSafe(), core.runMain({
+             tracingServiceName: 'contentlayer-cli',
+             verbose: this.verbose || process.env.CL_DEBUG !== undefined,
+-        }));
++        })).then(() => 0);
+         this.clearCacheIfNeeded = () => {
+             const { clearCache } = this;
+             return T.gen(function* ($) {
+diff --git a/dist/index.js b/dist/index.js
+index 12a3457e702c31687e151f516485ef0885fb1c60..57050b1e4fab6485e6e6b9f004339378837e3020 100644
+--- a/dist/index.js
++++ b/dist/index.js
+@@ -23,6 +23,7 @@ export const run = async () => {
+     cli.register(Builtins.HelpCommand);
+     cli.register(Builtins.VersionCommand);
+     // Run the CLI
+-    await cli.runExit(args, Cli.defaultContext);
++    const exitCode = await cli.run(args, Cli.defaultContext);
++    process.exitCode = typeof exitCode === 'number' ? exitCode : 0;
+ };
+ //# sourceMappingURL=index.js.map

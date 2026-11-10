@@ -1,5 +1,7 @@
 import Footer from "@/components/Footer";
-import LightRays from "@/components/LightRays";
+import HauntedBackground from "@/components/HauntedBackground";
+import MonsterEncounter from "@/components/MonsterEncounter";
+import HorrorDisclaimer from "@/components/HorrorDisclaimer";
 import Navbar from "@/components/NavBar";
 // import Snowfall from "@/components/SnowFall";
 import type { Metadata } from "next";
@@ -48,19 +50,9 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <div className="pointer-events-none fixed inset-0 -z-10">
-            <LightRays
-              raysOrigin="top-center"
-              raysColor="var(--primary)"
-              raysSpeed={0.5}
-              lightSpread={0.2}
-              rayLength={10}
-              followMouse={false}
-              mouseInfluence={0.1}
-              noiseAmount={0.1}
-              distortion={0.05}
-            />
-          </div>
+          <HauntedBackground />
+          <MonsterEncounter />
+          <HorrorDisclaimer />
           {children}
           <Footer />
         </ThemeProvider>

@@ -2,6 +2,7 @@ import HeroSection from "@/components/Hero";
 import Arch from "@/components/Arch";
 import Fact from "@/components/Fact";
 import Quotes from "@/components/Quotes";
+import PhilosophicalStudies from "@/components/PhilosophicalStudies";
 import Projects from "@/components/projects";
 
 export default function Home() {
@@ -12,6 +13,7 @@ export default function Home() {
         <Arch />
         <Fact />
         <Quotes />
+        <PhilosophicalStudies />
         <Projects />
       </main>
     </>

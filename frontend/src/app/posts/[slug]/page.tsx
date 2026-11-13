@@ -1,5 +1,5 @@
 // app/posts/[slug]/page.tsx
-import { allPosts } from "contentlayer/generated";
+import { posts as allPosts } from "#site/content";
 import { format, parseISO } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -8,7 +8,7 @@ import { ArrowLeft, Calendar, Clock, ChevronLeft, ChevronRight } from "lucide-re
 import { MDXContent } from "@/components/mdx/MDXComponents";
 
 export const generateStaticParams = async () =>
-  allPosts.map((post) => ({ slug: post._raw.flattenedPath }));
+  allPosts.map((post) => ({ slug: post.slug }));
 
 export const generateMetadata = async ({
   params,
@@ -16,7 +16,7 @@ export const generateMetadata = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await params;
-  const post = allPosts.find((post) => post._raw.flattenedPath === slug);
+  const post = allPosts.find((post) => post.slug === slug);
 
   if (!post) return { title: "Post Not Found | Haunted Forest" };
   return {
@@ -31,7 +31,7 @@ const PostLayout = async ({
   params: Promise<{ slug: string }>;
 }) => {
   const { slug } = await params;
-  const post = allPosts.find((post) => post._raw.flattenedPath === slug);
+  const post = allPosts.find((post) => post.slug === slug);
 
   if (!post) {
     notFound();
@@ -43,7 +43,7 @@ const PostLayout = async ({
   const sortedPosts = allPosts
     .slice()
     .sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-  const currentIndex = sortedPosts.findIndex((p) => p._raw.flattenedPath === slug);
+  const currentIndex = sortedPosts.findIndex((p) => p.slug === slug);
   const prevPost = currentIndex > 0 ? sortedPosts[currentIndex - 1] : null;
   const nextPost = currentIndex < sortedPosts.length - 1 ? sortedPosts[currentIndex + 1] : null;
 

@@ -1,6 +1,6 @@
 "use client";
 
-import { allPosts, Post } from "contentlayer/generated";
+import { posts as allPosts, Post } from "#site/content";
 import { compareDesc, format, parseISO } from "date-fns";
 import Image from "next/image";
 import Link from "next/link";
@@ -169,7 +169,7 @@ export default function PostsPage() {
 
       {posts.length === 0 ? (
         <div className="rounded-2xl text-center text-muted-foreground">
-          Nah can't find anything
+          Nah can&apos;t find anything
         </div>
       ) : (
         <div className="grid gap-6 sm:grid-cols-2 xl:grid-cols-3">

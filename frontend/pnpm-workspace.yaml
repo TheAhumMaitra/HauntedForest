@@ -1,2 +1,0 @@
-patchedDependencies:
-  '@contentlayer/cli': patches/@contentlayer__cli.patch

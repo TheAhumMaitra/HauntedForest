@@ -3,7 +3,7 @@
 import React from "react";
 import Link from "next/link";
 import Image from "next/image";
-import { useMDXComponent } from "next-contentlayer/hooks";
+import * as runtime from "react/jsx-runtime";
 import { cn } from "@/lib/utils";
 
 import { CodeBlock } from "./CodeBlock";
@@ -116,6 +116,13 @@ export const mdxComponents = {
       </span>
     );
   },
+};
+
+const useMDXComponent = (code: string) => {
+  return React.useMemo(() => {
+    const fn = new Function(code);
+    return fn({ ...runtime }).default;
+  }, [code]);
 };
 
 export interface MDXContentProps {

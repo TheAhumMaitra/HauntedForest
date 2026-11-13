@@ -1,8 +1,4 @@
 import Footer from "@/components/Footer";
-import HauntedBackground from "@/components/HauntedBackground";
-import MonsterEncounter from "@/components/MonsterEncounter";
-import EmfMeter from "@/components/EmfMeter";
-import HorrorDisclaimer from "@/components/HorrorDisclaimer";
 import Navbar from "@/components/NavBar";
 // import Snowfall from "@/components/SnowFall";
 import type { Metadata, Viewport } from "next";
@@ -57,10 +53,6 @@ export default function RootLayout({
           disableTransitionOnChange
         >
           <Navbar />
-          <HauntedBackground />
-          <MonsterEncounter />
-          <EmfMeter />
-          <HorrorDisclaimer />
           {children}
           <Footer />
         </ThemeProvider>

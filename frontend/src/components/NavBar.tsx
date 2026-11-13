@@ -8,7 +8,6 @@ import {
   SheetTrigger,
 } from "@/components/ui/sheet";
 import { ModeToggle } from "./theme-toggle";
-import { SeriousModeToggle } from "./SeriousModeToggle";
 import PossessedText from "./PossessedText";
 
 const navItems = {
@@ -41,7 +40,6 @@ export default function Navbar() {
         </div>
 
         <div className="flex items-center gap-2 sm:gap-3">
-          <SeriousModeToggle />
           <ModeToggle />
 
           <div className="md:hidden">

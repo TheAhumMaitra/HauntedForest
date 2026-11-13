@@ -1,27 +1,8 @@
 "use client";
 
-import React, { useState, useRef, useCallback, useEffect, useSyncExternalStore } from "react";
-import { SERIOUS_MODE_KEY, SERIOUS_MODE_EVENT } from "./MonsterEncounter";
+import React, { useState, useRef, useCallback, useEffect } from "react";
 
 const OCCULT_GLYPHS = "†‡§ψ░▒▓█ᚠᚢᚦᚨᚱᚲᛋᛏ01XØΔΨΩ!?>~";
-
-function subscribeSeriousMode(callback: () => void) {
-  window.addEventListener(SERIOUS_MODE_EVENT, callback);
-  window.addEventListener("storage", callback);
-  return () => {
-    window.removeEventListener(SERIOUS_MODE_EVENT, callback);
-    window.removeEventListener("storage", callback);
-  };
-}
-
-function getSeriousSnapshot() {
-  if (typeof window === "undefined") return false;
-  return localStorage.getItem(SERIOUS_MODE_KEY) === "true";
-}
-
-function getServerSnapshot() {
-  return false;
-}
 
 // Lightweight synthesized micro-static tick (Web Audio API, 12ms duration, very quiet)
 class PossessedAudioEngine {
@@ -79,12 +60,6 @@ export default function PossessedText({
   const [displayText, setDisplayText] = useState(text);
   const [isPossessed, setIsPossessed] = useState(false);
 
-  const isSeriousMode = useSyncExternalStore(
-    subscribeSeriousMode,
-    getSeriousSnapshot,
-    getServerSnapshot
-  );
-
   const animFrameRef = useRef<number | null>(null);
   const isScramblingRef = useRef(false);
 
@@ -93,7 +68,7 @@ export default function PossessedText({
   }, [text]);
 
   const triggerPossession = useCallback(() => {
-    if (isSeriousMode || isScramblingRef.current) return;
+    if (isScramblingRef.current) return;
 
     isScramblingRef.current = true;
     setIsPossessed(true);
@@ -134,7 +109,7 @@ export default function PossessedText({
     };
 
     animFrameRef.current = requestAnimationFrame(frame);
-  }, [isSeriousMode, text]);
+  }, [text]);
 
   // Clean up on unmount
   useEffect(() => {

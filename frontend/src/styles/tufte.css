@@ -490,3 +490,103 @@
     line-height: 1.55;
   }
 }
+
+/* ==========================================================================
+   Poetry Typography & Atmosphere
+   ========================================================================== */
+
+.poem-body {
+  font-family: "et-book", var(--font-heading), Georgia, "Times New Roman", serif;
+  line-height: 2.15;
+  letter-spacing: 0.015em;
+  font-size: 1.18rem;
+  color: var(--foreground);
+}
+
+.poem-body p {
+  white-space: pre-line;
+  margin-bottom: 2.5rem;
+  line-height: 2.15;
+}
+
+.poem-body h1,
+.poem-body h2,
+.poem-body h3,
+.poem-body h4 {
+  font-family: var(--font-mono), monospace;
+  font-size: 0.95rem;
+  font-weight: 600;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  margin-top: 2.5rem;
+  margin-bottom: 1.25rem;
+  opacity: 0.75;
+}
+
+.poem-body hr {
+  border: 0;
+  text-align: center;
+  margin: 3rem auto;
+  height: 2rem;
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.poem-body hr::after {
+  content: "❦";
+  display: inline-block;
+  font-size: 1.35rem;
+  opacity: 0.45;
+  color: var(--destructive);
+}
+
+/* Alignment variations */
+.poem-align-center .poem-body p,
+.poem-align-center .poem-body h1,
+.poem-align-center .poem-body h2,
+.poem-align-center .poem-body h3,
+.poem-align-center .poem-body h4 {
+  text-align: center;
+}
+
+.poem-align-left .poem-body p,
+.poem-align-left .poem-body h1,
+.poem-align-left .poem-body h2,
+.poem-align-left .poem-body h3,
+.poem-align-left .poem-body h4 {
+  text-align: left;
+}
+
+/* Font variations */
+.poem-font-serif .poem-body {
+  font-family: "et-book", Georgia, serif;
+}
+
+.poem-font-sans .poem-body {
+  font-family: var(--font-sans, system-ui, -apple-system, sans-serif);
+  line-height: 2.05;
+}
+
+.poem-font-mono .poem-body {
+  font-family: var(--font-mono, monospace);
+  line-height: 2.0;
+  font-size: 1.05rem;
+}
+
+/* Size variations */
+.poem-size-sm .poem-body {
+  font-size: 1.05rem;
+  line-height: 2.0;
+}
+
+.poem-size-md .poem-body {
+  font-size: 1.2rem;
+  line-height: 2.2;
+}
+
+.poem-size-lg .poem-body {
+  font-size: 1.35rem;
+  line-height: 2.35;
+}

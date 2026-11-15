@@ -28,6 +28,7 @@ export default function Footer() {
             <Link href={"/"}>Home</Link>
             <Link href={"/about"}>About</Link>
             <Link href={"/posts"}>Blog Posts</Link>
+            <Link href={"/poems"}>Poems</Link>
           </div>
         </div>
       </div>

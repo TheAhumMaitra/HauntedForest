@@ -14,6 +14,7 @@ const navItems = {
   "/": "Home",
   "/about": "About",
   "/posts": "Articles",
+  "/poems": "Poems",
 };
 
 export default function Navbar() {

@@ -26,6 +26,9 @@ const categories = [
   "technology",
   "metaphysics",
   "theism",
+  "arguments",
+  "weird",
+  "challenge"
 ] as const;
 
 function PostCard(post: Post) {
